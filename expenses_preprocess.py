@@ -10,41 +10,36 @@ def read_all_csvs(files_path, filename_pattern):
     return pd.concat(all_dfs, ignore_index=True)
 
 
-def nubank_preprocess(expenses, category_conversion_hash):
+def incomes_preprocess(incomes):
+    # Parse date
+    incomes['date'] = pd.to_datetime(incomes['date'], format="%Y-%m-%d")
+    return incomes[['date', 'title', 'category', 'amount']]
+
+
+def expenses_preprocess(expenses, category_conversion_hash):
     # Replace categories to the official ones
     expenses['category'] = expenses['category'].replace(category_conversion_hash)
-    # Update amount to reflect expenses as negative value
-    expenses['amount'] = expenses['amount'] * -1
-    # Parse date
-    expenses['date'] = pd.to_datetime(expenses.date, format="%Y-%m-%d")
-    # Remove cagegory Pagamento
-    expenses = expenses.loc[expenses['category'] != 'Pagamento']
-    return expenses
-
-
-def splitwise_preprocess(expenses, category_conversion_hash):
-    # Replace categories to the official ones
-    expenses['Categoria'] = expenses['Categoria'].replace(category_conversion_hash)
-    # Parse date
-    expenses['Data'] = pd.to_datetime(expenses['Data'], format="%Y-%m-%d")
-    # Remove cagegory Pagamento
-    expenses = expenses.loc[expenses['Categoria'] != 'Pagamento']
-    # Remove Saldo total expense
-    expenses = expenses.loc[expenses['Descrição'] != 'Saldo total']
-    return expenses
-
-
-def splitwise_focused_on(person_name, expenses, convert_col_names):
-    expenses = expenses.rename(index=str, columns={**convert_col_names, **{person_name: 'amount'}})
-    return expenses[['date', 'title', 'category', 'amount']]
-
-
-def other_accounts_preprocess(expenses):
     # Parse date
     expenses['date'] = pd.to_datetime(expenses['date'], format="%Y-%m-%d")
     # Update amount to reflect expenses as negative value
     expenses['amount'] = expenses['amount'] * -1
     # Select only necessary columns
+    return expenses[['date', 'title', 'category', 'amount']]
+
+
+def nubank_preprocess(expenses):
+    # Remove cagegory Pagamento
+    expenses = expenses.loc[expenses['category'] != 'Pagamento']
+    return expenses[['date', 'title', 'category', 'amount']]
+
+
+def splitwise_preprocess(expenses, person_name, convert_col_names):
+    # Convert col names to default ones
+    expenses = expenses.rename(index=str, columns={**convert_col_names, **{person_name: 'amount'}})
+    # Remove cagegory Pagamento
+    expenses = expenses.loc[expenses['category'] != 'Pagamento']
+    # Remove Saldo total expense
+    expenses = expenses.loc[expenses['title'] != 'Saldo total']
     return expenses[['date', 'title', 'category', 'amount']]
 
 
