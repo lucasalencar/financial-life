@@ -1,17 +1,24 @@
 import glob
+import os
 import pandas as pd
 
 
 def read_all_csvs(files_path, filename_pattern):
     """Reads all csvs given a filname pattern and
     joins all of them into a single DataFrame"""
-    all_files = glob.glob(files_path + filename_pattern)
+    all_files = glob.glob(os.path.join(files_path, filename_pattern))
     all_dfs = [pd.read_csv(filename) for filename in all_files]
     return pd.concat(all_dfs, ignore_index=True)
 
 
+def read_first_file_found(filepath, file_pattern):
+    """Read content of the first file found given a regex pattern"""
+    search_pattern = os.path.join(filepath, file_pattern)
+    return pd.read_csv(glob.glob(search_pattern)[0])
+
+
 def incomes_preprocess(incomes):
-    # Parse date
+    # Parse date to datetime format
     incomes['date'] = pd.to_datetime(incomes['date'], format="%Y-%m-%d")
     return incomes[['date', 'title', 'category', 'amount']]
 
@@ -40,6 +47,8 @@ def splitwise_preprocess(expenses, person_name, convert_col_names):
     expenses = expenses.loc[expenses['category'] != 'Pagamento']
     # Remove Saldo total expense
     expenses = expenses.loc[expenses['title'] != 'Saldo total']
+    # Because default preprocess converts values to negative, return amount to original values
+    expenses['amount'] = expenses['amount'] * -1
     return expenses[['date', 'title', 'category', 'amount']]
 
 
