@@ -20,6 +20,9 @@ def read_first_file_found(filepath, file_pattern):
 def incomes_preprocess(incomes):
     # Parse date to datetime format
     incomes['date'] = pd.to_datetime(incomes['date'], format="%Y-%m-%d")
+    # Convert amount to float
+    if incomes.amount.dtype != float:
+        incomes['amount'] = incomes['amount'].apply(lambda x: float(x.replace(',', '')))
     return incomes[['date', 'title', 'category', 'amount']]
 
 
@@ -28,6 +31,9 @@ def expenses_preprocess(expenses, category_conversion_hash):
     expenses['category'] = expenses['category'].replace(category_conversion_hash)
     # Parse date
     expenses['date'] = pd.to_datetime(expenses['date'], format="%Y-%m-%d")
+    # Convert amount to float
+    if expenses.amount.dtype != float:
+        expenses['amount'] = expenses['amount'].apply(lambda x: float(x.replace(',', '')))
     # Update amount to reflect expenses as negative value
     expenses['amount'] = expenses['amount'] * -1
     # Select only necessary columns
