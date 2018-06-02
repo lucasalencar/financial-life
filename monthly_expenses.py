@@ -1,4 +1,3 @@
-import calendar
 import pandas as pd
 import formatting as fmt
 
@@ -55,9 +54,28 @@ def month_day_range(date):
 
     https://gist.github.com/waynemoore/1109153
     """
+    import calendar
     first_day = date.replace(day=1)
     last_day = date.replace(day=calendar.monthrange(date.year, date.month)[1])
     return first_day, last_day
+
+
+def previous_month(t):
+    """Return a `datetime.date` or `datetime.datetime` (as given) that is
+    one month later.
+
+    Note that the resultant day of the month might change if the following
+    month has fewer days:
+
+        >>> subtract_one_month(datetime.date(2010, 3, 31))
+        datetime.date(2010, 2, 28)
+    """
+    import datetime
+    one_day = datetime.timedelta(days=1)
+    one_month_earlier = t - one_day
+    while one_month_earlier.month == t.month or one_month_earlier.day > t.day:
+        one_month_earlier -= one_day
+    return one_month_earlier
 
 
 def records_for_month(records, base_date):
