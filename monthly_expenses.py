@@ -1,10 +1,6 @@
 import pandas as pd
 import formatting as fmt
-
-
-def amount_by_month(data):
-    return data.groupby(data['date'].dt.strftime("%Y-%m")).amount.sum().to_frame()
-
+from record_summary import total_amount_by
 
 def balance(expense, income):
     """Computes balance based on expenses and incomes.
@@ -38,12 +34,8 @@ def style_summary_expenses(summary, balance_goal):
         .applymap(fmt.red_to_green_background(balance_goal), subset=['Balance (%)'])
 
 
-def total_amount_by_category(records):
-    return records.groupby('category').sum().sort_values('amount')
-
-
 def expenses_distribution(expenses):
-    total_expenses_by_category = total_amount_by_category(expenses)
+    total_expenses_by_category = total_amount_by('category', expenses)
     total_expenses_by_category = total_expenses_by_category[total_expenses_by_category.amount < 0]
     total_spent_on_month = expenses.amount.sum()
     return total_expenses_by_category / total_spent_on_month
