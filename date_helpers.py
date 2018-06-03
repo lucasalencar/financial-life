@@ -1,7 +1,13 @@
 def records_for_month(records, base_date):
     """Selects records that goes from the beginning to end of month."""
     month_range = month_day_range(base_date)
-    return records[(records['date'] >= month_range[0]) & (records['date'] <= month_range[1])]
+    return records[(records.date >= month_range[0]) & (records.date <= month_range[1])]
+
+
+def past_records_for_month(records, base_date):
+    """Returns all records past the month in the base_date parameter."""
+    month_range = month_day_range(base_date)
+    return records[records.date < month_range[0]]
 
 
 def month_day_range(date):
