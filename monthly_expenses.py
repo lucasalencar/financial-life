@@ -39,3 +39,12 @@ def expenses_distribution(expenses):
     total_expenses_by_category = total_expenses_by_category[total_expenses_by_category.amount < 0]
     total_spent_on_month = expenses.amount.sum()
     return total_expenses_by_category / total_spent_on_month
+
+
+EXPENSES_DISTRIBUTION_COLS_FORMAT = {
+    'amount': fmt.PERC_FORMAT
+}
+
+
+def style_expenses_distribution(dist):
+    return dist.style.format(EXPENSES_DISTRIBUTION_COLS_FORMAT)
