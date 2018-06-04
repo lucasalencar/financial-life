@@ -36,5 +36,7 @@ MONTHLY_INVEST_COLS_FORMAT = {
 }
 
 
-def style_summary_investments(summary):
-    return summary.style.format(MONTHLY_INVEST_COLS_FORMAT)
+def style_summary_investments(summary, return_goal):
+    return summary.style\
+        .format(MONTHLY_INVEST_COLS_FORMAT)\
+        .applymap(fmt.red_to_green_background(return_goal), subset=['Return for month', 'Return for month (%)'])
