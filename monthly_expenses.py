@@ -14,9 +14,9 @@ def summary_expenses(expenses, incomes):
     """Builds a Dataframe with the expenses,
     incomes, balance and balance percentage."""
     balance_val, balance_perc = balance(expenses, incomes)
-    summary_exp = pd.concat([expenses, incomes, balance_val, balance_perc], axis=1).dropna()
+    summary_exp = pd.concat([expenses, incomes, balance_val, balance_perc], axis=1, sort=False)
     summary_exp.columns = ['Expenses', 'Incomes', 'Balance', 'Balance (%)']
-    return summary_exp
+    return summary_exp.dropna()
 
 
 MONTHLY_COST_COLS_FORMAT = {

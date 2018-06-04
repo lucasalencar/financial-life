@@ -24,9 +24,9 @@ def investiment_return_for_month(invest, base_date):
 def summary_investiments(invest, base_date):
     total_invest_by_title = total_amount_by('title', invest, ascending=False)
     invest_return_for_month, invest_return_for_month_perc = investiment_return_for_month(invest, base_date)
-    summary_invest = pd.concat([total_invest_by_title, invest_return_for_month, invest_return_for_month_perc], axis=1)
+    summary_invest = pd.concat([total_invest_by_title, invest_return_for_month, invest_return_for_month_perc], axis=1, sort=False)
     summary_invest.columns = ['Total', 'Return for month', 'Return for month (%)']
-    return summary_invest.sort_values('Return for month (%)', ascending=False)
+    return summary_invest.sort_values('Return for month (%)', ascending=False).dropna()
 
 
 MONTHLY_INVEST_COLS_FORMAT = {
