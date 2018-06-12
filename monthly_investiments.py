@@ -1,5 +1,6 @@
 import pandas as pd
 import formatting as fmt
+import seaborn as sns
 from record_summary import total_amount_by, cumulative_amount_by, groupby_month
 from date_helpers import records_for_month, past_records_for_month
 
@@ -71,3 +72,25 @@ def summary_assets(invest):
 
     assets_summary.columns = ['Total', 'Return', 'Return / Total', 'Applications', 'Applications / Total']
     return assets_summary
+
+
+ASSETS_SUMMARY_COLS_FORMAT = {
+    'Total': fmt.BR_CURRENCY_FORMAT,
+    'Return': fmt.BR_CURRENCY_FORMAT,
+    'Return / Total': fmt.PERC_FORMAT,
+    'Applications': fmt.BR_CURRENCY_FORMAT,
+    'Applications / Total': fmt.PERC_FORMAT
+}
+
+
+def style_summary_assets(summary):
+    cm = sns.light_palette("green", as_cmap=True)
+    background_subset = pd.IndexSlice['2018-02':, ['Total',
+                                                   'Return',
+                                                   'Return / Total',
+                                                   'Applications',
+                                                   'Applications / Total']]
+
+    return summary.style\
+        .format(ASSETS_SUMMARY_COLS_FORMAT)\
+        .background_gradient(cmap=cm, subset=background_subset)
