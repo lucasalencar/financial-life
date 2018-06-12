@@ -1,6 +1,6 @@
 import pandas as pd
 import formatting as fmt
-from record_summary import total_amount_by
+from record_summary import total_amount_by, cumulative_amount_by, groupby_month
 from date_helpers import records_for_month, past_records_for_month
 
 
@@ -40,3 +40,34 @@ def style_summary_investments(summary, return_goal):
     return summary.style\
         .format(MONTHLY_INVEST_COLS_FORMAT)\
         .applymap(fmt.red_to_green_background(return_goal), subset=['Return for month', 'Return for month (%)'])
+
+
+def summary_invest_return(invest):
+    invest_return = invest[invest.category == 'Rendimento']
+    total_return_by_month = total_amount_by(groupby_month(invest_return), invest_return)
+    return total_return_by_month
+
+
+def summary_invest_applications(invest):
+    invest_application = invest[invest.category == 'Aplicação']
+    total_application_by_month = total_amount_by(groupby_month(invest_application), invest_application)
+    return total_application_by_month
+
+
+def summary_assets(invest):
+    cumulative_assets_by_month = cumulative_amount_by(groupby_month(invest), invest)
+
+    total_return_by_month = summary_invest_return(invest)
+    total_application_by_month = summary_invest_applications(invest)
+
+    return_proportion_by_month = total_return_by_month / cumulative_assets_by_month
+    application_proportion_by_month = total_application_by_month / cumulative_assets_by_month
+
+    assets_summary = pd.concat([cumulative_assets_by_month,
+                                total_return_by_month,
+                                return_proportion_by_month,
+                                total_application_by_month,
+                                application_proportion_by_month], axis=1, sort=False)
+
+    assets_summary.columns = ['Total', 'Return', 'Return / Total', 'Applications', 'Applications / Total']
+    return assets_summary
