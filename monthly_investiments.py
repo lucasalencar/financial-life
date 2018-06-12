@@ -94,3 +94,7 @@ def style_summary_assets(summary):
     return summary.style\
         .format(ASSETS_SUMMARY_COLS_FORMAT)\
         .background_gradient(cmap=cm, subset=background_subset)
+
+
+def style_assets_goals(assets_goals, assets_thresh):
+    return assets_goals.style.applymap(fmt.green_background_threshold(assets_thresh))

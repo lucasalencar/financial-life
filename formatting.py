@@ -19,3 +19,13 @@ def red_to_green_background(mid_range):
             color = 'green'
         return 'background-color: %s' % color
     return background_color
+
+
+def green_background_threshold(thresh):
+    """When value reaches given threshold, it colors background to green"""
+    def background_color(value):
+        if value < thresh:
+            return 'background-color: green'
+        else:
+            return ''
+    return background_color
