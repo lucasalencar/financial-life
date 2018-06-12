@@ -16,7 +16,7 @@ def summary_expenses(expenses, incomes):
     balance_val, balance_perc = balance(expenses, incomes)
     summary_exp = pd.concat([expenses, incomes, balance_val, balance_perc], axis=1, sort=False)
     summary_exp.columns = ['Expenses', 'Incomes', 'Balance', 'Balance (%)']
-    return summary_exp.dropna()
+    return summary_exp.dropna().sort_index()
 
 
 MONTHLY_COST_COLS_FORMAT = {
@@ -38,7 +38,8 @@ def expenses_distribution(expenses):
     total_expenses_by_category = total_amount_by('category', expenses)
     total_expenses_by_category = total_expenses_by_category[total_expenses_by_category.amount < 0]
     total_spent_on_month = expenses.amount.sum()
-    return total_expenses_by_category / total_spent_on_month
+    distribution = total_expenses_by_category / total_spent_on_month
+    return distribution.sort_values('amount', ascending=False)
 
 
 EXPENSES_DISTRIBUTION_COLS_FORMAT = {
