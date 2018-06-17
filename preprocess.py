@@ -29,7 +29,7 @@ def incomes_preprocess(incomes):
     # Convert amount to float
     if incomes.amount.dtype != float:
         incomes['amount'] = incomes['amount'].apply(lambda x: float(x.replace(',', '')))
-    return incomes[['date', 'title', 'category', 'amount']]
+    return incomes
 
 
 def expenses_preprocess(expenses, category_conversion_hash):
