@@ -97,4 +97,6 @@ def style_summary_assets(summary):
 
 
 def style_assets_goals(assets_goals, assets_thresh):
-    return assets_goals.style.applymap(fmt.green_background_threshold(assets_thresh))
+    return assets_goals.style\
+        .format({'amount': fmt.BR_CURRENCY_FORMAT})\
+        .applymap(fmt.green_background_threshold(assets_thresh))
