@@ -52,9 +52,17 @@ def nubank_preprocess(expenses):
     return expenses[['date', 'title', 'category', 'amount']]
 
 
-def splitwise_preprocess(expenses, person_name, convert_col_names):
+# Splitwise column names to convert
+SPLITWISE_COLUMN_NAMES = {
+    'Data': 'date',
+    'Descrição': 'title',
+    'Categoria': 'category',
+}
+
+
+def splitwise_preprocess(expenses, person_name):
     # Convert col names to default ones
-    expenses = expenses.rename(index=str, columns={**convert_col_names, **{person_name: 'amount'}})
+    expenses = expenses.rename(index=str, columns={**SPLITWISE_COLUMN_NAMES, **{person_name: 'amount'}})
     # Remove cagegory Pagamento
     expenses = expenses.loc[expenses['category'] != 'Pagamento']
     # Remove Saldo total expense
