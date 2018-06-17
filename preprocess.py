@@ -6,15 +6,21 @@ import pandas as pd
 def read_all_csvs(files_path, filename_pattern):
     """Reads all csvs given a filname pattern and
     joins all of them into a single DataFrame"""
-    all_files = glob.glob(os.path.join(files_path, filename_pattern))
+    full_pattern = os.path.join(files_path, filename_pattern)
+    all_files = glob.glob(full_pattern)
     all_dfs = [pd.read_csv(filename) for filename in all_files]
+    if not all_dfs:
+        raise Exception("No files found with pattern %s" % full_pattern)
     return pd.concat(all_dfs, ignore_index=True)
 
 
 def read_first_file_found(filepath, file_pattern):
     """Read content of the first file found given a regex pattern"""
-    search_pattern = os.path.join(filepath, file_pattern)
-    return pd.read_csv(glob.glob(search_pattern)[0])
+    full_pattern = os.path.join(filepath, file_pattern)
+    found_files = glob.glob(full_pattern)
+    if not found_files:
+        raise Exception("No files found with pattern %s" % full_pattern)
+    return pd.read_csv(found_files[0])
 
 
 def incomes_preprocess(incomes):
