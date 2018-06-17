@@ -1,5 +1,5 @@
 PERC_FORMAT = "{:.2%}"
-BR_CURRENCY_FORMAT = "R$ {:.2f}"
+BR_CURRENCY_FORMAT = "R$ {:,.2f}"
 
 def amount_color(value):
     color = 'red' if value <= 0 else 'green'
