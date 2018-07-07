@@ -38,12 +38,15 @@ def expenses_distribution(expenses):
     total_expenses_by_category = total_amount_by('category', expenses)
     total_expenses_by_category = total_expenses_by_category[total_expenses_by_category.amount < 0]
     total_spent_on_month = expenses.amount.sum()
-    distribution = total_expenses_by_category / total_spent_on_month
-    return distribution.sort_values('amount', ascending=False)
+    distribution_by_category = total_expenses_by_category / total_spent_on_month
+    distribution = pd.concat([distribution_by_category, total_expenses_by_category], axis=1)
+    distribution.columns = ["amount %", "amount #"]
+    return distribution.sort_values('amount %', ascending=False)
 
 
 EXPENSES_DISTRIBUTION_COLS_FORMAT = {
-    'amount': fmt.PERC_FORMAT
+    'amount %': fmt.PERC_FORMAT,
+    'amount #': fmt.BR_CURRENCY_FORMAT
 }
 
 
