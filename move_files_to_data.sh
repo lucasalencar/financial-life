@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Other accounts csv exports
-mv $HOME/Downloads/Outras\ contas*.csv ./data/
+mv $HOME/Downloads/Extrato\ outras\ contas*.csv ./data/
 
 # Nubank csv exports
 mv $HOME/Downloads/nubank*.csv ./data/
