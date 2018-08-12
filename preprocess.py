@@ -9,18 +9,22 @@ def read_all_csvs(files_path, filename_pattern):
     full_pattern = os.path.join(files_path, filename_pattern)
     all_files = glob.glob(full_pattern)
     all_dfs = [pd.read_csv(filename) for filename in all_files]
-    if not all_dfs:
-        raise Exception("No files found with pattern %s" % full_pattern)
-    return pd.concat(all_dfs, ignore_index=True)
+    if all_dfs:
+        return pd.concat(all_dfs, ignore_index=True)
+    else:
+        print("WARNING: No files found with pattern %s" % full_pattern)
+        return None
 
 
 def read_first_file_found(filepath, file_pattern):
     """Read content of the first file found given a regex pattern"""
     full_pattern = os.path.join(filepath, file_pattern)
     found_files = glob.glob(full_pattern)
-    if not found_files:
-        raise Exception("No files found with pattern %s" % full_pattern)
-    return pd.read_csv(found_files[0])
+    if found_files:
+        return pd.read_csv(found_files[0])
+    else:
+        print("WARNING: No files found with pattern %s" % full_pattern)
+        return None
 
 
 def incomes_preprocess(incomes):
