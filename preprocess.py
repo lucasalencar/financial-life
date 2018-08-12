@@ -28,6 +28,8 @@ def read_first_file_found(filepath, file_pattern):
 
 
 def incomes_preprocess(incomes):
+    # Convert categories to lower case
+    incomes['category'] = incomes['category'].apply(lambda x: x.lower())
     # Parse date to datetime format
     incomes['date'] = pd.to_datetime(incomes['date'], format="%Y-%m-%d")
     # Convert amount to float
@@ -37,8 +39,10 @@ def incomes_preprocess(incomes):
 
 
 def expenses_preprocess(expenses, category_conversion_hash):
-    # Replace categories to the official ones
-    expenses['category'] = expenses['category'].replace(category_conversion_hash)
+    # Replace categories to the official ones and convert to lower case
+    expenses['category'] = expenses['category']\
+        .replace(category_conversion_hash)\
+        .apply(lambda x: x.lower())
     # Parse date
     expenses['date'] = pd.to_datetime(expenses['date'], format="%Y-%m-%d")
     # Convert amount to float

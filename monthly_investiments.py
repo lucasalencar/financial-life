@@ -8,7 +8,7 @@ from date_helpers import records_for_month, past_records_for_month
 def total_investiment_return_for_month(invest, base_date):
     """Total investiment return for the month on the base date."""
     invest_for_month = records_for_month(invest, base_date)
-    return invest_for_month[invest_for_month.category == 'Rendimento']\
+    return invest_for_month[invest_for_month.category == 'rendimento']\
         [['title', 'amount']].set_index('title')
 
 
@@ -43,23 +43,17 @@ def style_summary_investments(summary, return_goal):
         .applymap(fmt.red_to_green_background(return_goal), subset=['Return for month', 'Return for month (%)'])
 
 
-def summary_invest_return(invest):
-    invest_return = invest[invest.category == 'Rendimento']
-    total_return_by_month = total_amount_by(groupby_month(invest_return), invest_return)
-    return total_return_by_month
-
-
-def summary_invest_applications(invest):
-    invest_application = invest[invest.category == 'Aplicação']
-    total_application_by_month = total_amount_by(groupby_month(invest_application), invest_application)
-    return total_application_by_month
+def summary_invest_by_category(invest, category):
+    invest_by_category = invest[invest.category == category]
+    total_invest_by_month = total_amount_by(groupby_month(invest_by_category), invest_by_category)
+    return total_invest_by_month
 
 
 def summary_assets(invest):
     cumulative_assets_by_month = cumulative_amount_by(groupby_month(invest), invest)
 
-    total_return_by_month = summary_invest_return(invest)
-    total_application_by_month = summary_invest_applications(invest)
+    total_return_by_month = summary_invest_by_category(invest,'rendimento')
+    total_application_by_month = summary_invest_by_category(invest, 'aplicação')
 
     return_proportion_by_month = total_return_by_month / cumulative_assets_by_month
     application_proportion_by_month = total_application_by_month / cumulative_assets_by_month
