@@ -6,19 +6,19 @@ from date_helpers import records_for_month, past_records_for_month
 from central_bank_data import central_bank_metric, BC_IPCA_BY_MONTH_ID
 
 
-def total_investiment_return_for_month(invest, base_date):
+def total_return_for_month(invest, base_date):
     """Total investiment return for the month on the base date."""
     invest_for_month = records_for_month(invest, base_date)
     return invest_for_month[invest_for_month.category == 'rendimento']\
         [['title', 'amount']].set_index('title')
 
 
-def investiment_return_for_month(invest, base_date):
+def return_for_month(invest, base_date):
     """Returns total investiment return for month
     and its percentage given the investment history."""
     past_invetiments = past_records_for_month(invest, base_date)
     total_past_invest_by_title = total_amount_by('title', past_invetiments)
-    invest_return_for_month = total_investiment_return_for_month(invest, base_date)
+    invest_return_for_month = total_return_for_month(invest, base_date)
     invest_return_for_month_perc = invest_return_for_month / total_past_invest_by_title
     return invest_return_for_month, invest_return_for_month_perc
 
@@ -29,15 +29,13 @@ def return_with_inflation(return_perc, base_date):
 
 
 def summary_investiments(invest, base_date):
-    total_invest_by_title = total_amount_by('title', invest)
-    invest_return_for_month, invest_return_for_month_perc = investiment_return_for_month(invest, base_date)
-    return_for_month_with_inflation = return_with_inflation(invest_return_for_month_perc, base_date)
+    invest_return_for_month, return_for_month_perc = return_for_month(invest, base_date)
 
     summary_columns = [
-        total_invest_by_title,
+        total_amount_by('title', invest),
         invest_return_for_month,
-        invest_return_for_month_perc,
-        return_for_month_with_inflation,
+        return_for_month_perc,
+        return_with_inflation(return_for_month_perc, base_date)
     ]
 
     summary_invest = pd.concat(summary_columns, axis=1, sort=False)
