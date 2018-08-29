@@ -3,6 +3,7 @@ import formatting as fmt
 import seaborn as sns
 from record_summary import total_amount_by, cumulative_amount_by, groupby_month
 from date_helpers import records_for_month, past_records_for_month
+from central_bank_data import central_bank_metric, BC_IPCA_BY_MONTH_ID
 
 
 def total_investiment_return_for_month(invest, base_date):
@@ -22,25 +23,46 @@ def investiment_return_for_month(invest, base_date):
     return invest_return_for_month, invest_return_for_month_perc
 
 
+def return_with_inflation(return_perc, base_date):
+    ipca = central_bank_metric(BC_IPCA_BY_MONTH_ID, base_date)
+    return return_perc - ipca
+
+
 def summary_investiments(invest, base_date):
     total_invest_by_title = total_amount_by('title', invest)
     invest_return_for_month, invest_return_for_month_perc = investiment_return_for_month(invest, base_date)
-    summary_invest = pd.concat([total_invest_by_title, invest_return_for_month, invest_return_for_month_perc], axis=1, sort=False)
-    summary_invest.columns = ['Total', 'Return for month', 'Return for month (%)']
+    return_for_month_with_inflation = return_with_inflation(invest_return_for_month_perc, base_date)
+
+    summary_columns = [
+        total_invest_by_title,
+        invest_return_for_month,
+        invest_return_for_month_perc,
+        return_for_month_with_inflation,
+    ]
+
+    summary_invest = pd.concat(summary_columns, axis=1, sort=False)
+    summary_invest.columns = [
+        'Total',
+        'Return for month',
+        'Return for month (%)',
+        'Return with inflation (%)'
+    ]
     return summary_invest.sort_values('Return for month (%)', ascending=False).dropna()
 
 
 MONTHLY_INVEST_COLS_FORMAT = {
     'Total': fmt.BR_CURRENCY_FORMAT,
     'Return for month': fmt.BR_CURRENCY_FORMAT,
-    'Return for month (%)': fmt.PERC_FORMAT
+    'Return for month (%)': fmt.PERC_FORMAT,
+    'Return with inflation (%)': fmt.PERC_FORMAT
 }
 
 
 def style_summary_investments(summary, return_goal):
     return summary.style\
         .format(MONTHLY_INVEST_COLS_FORMAT)\
-        .applymap(fmt.red_to_green_background(return_goal), subset=['Return for month', 'Return for month (%)'])
+        .applymap(fmt.red_to_green_background(return_goal),
+                  subset=['Return for month', 'Return for month (%)', 'Return with inflation (%)'])
 
 
 def summary_invest_by_category(invest, category):
