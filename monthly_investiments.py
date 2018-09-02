@@ -49,7 +49,7 @@ def summary_investiments(invest, base_date):
         'Return for month (%)',
         'Return with inflation (%)'
     ]
-    return summary_invest.sort_values('Return for month (%)', ascending=False).dropna()
+    return summary_invest[summary_invest['Total'] > 0]
 
 
 MONTHLY_INVEST_COLS_FORMAT = {
