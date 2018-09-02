@@ -60,11 +60,13 @@ MONTHLY_INVEST_COLS_FORMAT = {
 }
 
 
-def style_summary_investments(summary, return_goal):
+def style_summary_investments(summary, return_for_month_goal, return_with_inflation_goal):
     return summary.style\
         .format(MONTHLY_INVEST_COLS_FORMAT)\
-        .applymap(fmt.red_to_green_background(return_goal),
-                  subset=['Return for month', 'Return for month (%)', 'Return with inflation (%)'])
+        .applymap(fmt.red_to_green_background(return_for_month_goal),
+                  subset=['Return for month', 'Return for month (%)'])\
+        .applymap(fmt.red_to_green_background(return_with_inflation_goal),
+                  subset=['Return with inflation (%)'])
 
 
 def summary_invest_by_category(invest, category):
