@@ -28,7 +28,11 @@ def read_central_bank_data(timeseries_id, value_column_name):
 def central_bank_metric_for_month(timeseries, base_date):
     """Returns the metric given the year and month on the base_date parameter.
     Specific for time series fetched from Central Bank website."""
-    return timeseries[timeseries.date == base_date.strftime("%Y-%m")].iloc[0,1]
+    metric_for_month = timeseries[timeseries.date == base_date.strftime("%Y-%m")]
+    if metric_for_month.empty:
+        return None
+    else:
+        return metric_for_month.iloc[0, 1]
 
 def central_bank_metric(timeseries_id, base_date, value_column_name='value'):
     timeseries = read_central_bank_data(timeseries_id, value_column_name)

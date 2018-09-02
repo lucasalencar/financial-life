@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import formatting as fmt
 import seaborn as sns
 from record_summary import total_amount_by, cumulative_amount_by, groupby_month
@@ -25,7 +26,10 @@ def return_for_month(invest, base_date):
 
 def return_with_inflation(return_perc, base_date):
     ipca = central_bank_metric(BC_IPCA_BY_MONTH_ID, base_date)
-    return return_perc - ipca
+    if ipca is not None:
+        return return_perc - ipca
+    else:
+        return pd.DataFrame(np.nan, index=return_perc.index, columns=[0])
 
 
 def summary_investiments(invest, base_date):
