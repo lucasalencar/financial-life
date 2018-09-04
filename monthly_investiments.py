@@ -17,8 +17,8 @@ def total_return_for_month(invest, base_date):
 def return_for_month(invest, base_date):
     """Returns total investiment return for month
     and its percentage given the investment history."""
-    past_invetiments = past_records_for_month(invest, base_date)
-    total_past_invest_by_title = total_amount_by('title', past_invetiments)
+    past_invest = past_records_for_month(invest, base_date)
+    total_past_invest_by_title = total_amount_by('title', past_invest)
     invest_return_for_month = total_return_for_month(invest, base_date)
     invest_return_for_month_perc = invest_return_for_month / total_past_invest_by_title
     return invest_return_for_month, invest_return_for_month_perc
@@ -33,10 +33,12 @@ def return_with_inflation(return_perc, base_date):
 
 
 def summary_investiments(invest, base_date):
+    past_invest = past_records_for_month(invest, base_date)
     invest_return_for_month, return_for_month_perc = return_for_month(invest, base_date)
 
     summary_columns = [
         total_amount_by('title', invest),
+        total_amount_by('title', past_invest),
         invest_return_for_month,
         return_for_month_perc,
         return_with_inflation(return_for_month_perc, base_date)
@@ -45,6 +47,7 @@ def summary_investiments(invest, base_date):
     summary_invest = pd.concat(summary_columns, axis=1, sort=False)
     summary_invest.columns = [
         'Total',
+        'Total last month',
         'Return for month',
         'Return for month (%)',
         'Return with inflation (%)'
@@ -54,6 +57,7 @@ def summary_investiments(invest, base_date):
 
 MONTHLY_INVEST_COLS_FORMAT = {
     'Total': fmt.BR_CURRENCY_FORMAT,
+    'Total last month': fmt.BR_CURRENCY_FORMAT,
     'Return for month': fmt.BR_CURRENCY_FORMAT,
     'Return for month (%)': fmt.PERC_FORMAT,
     'Return with inflation (%)': fmt.PERC_FORMAT
