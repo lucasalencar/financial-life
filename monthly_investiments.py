@@ -3,24 +3,46 @@ import numpy as np
 import formatting as fmt
 import seaborn as sns
 from record_summary import total_amount_by, cumulative_amount_by, groupby_month
-from date_helpers import records_for_month, past_records_for_month
+from date_helpers import records_for_month, past_records_for_month, records_for_previous_month
 from central_bank_data import central_bank_metric, BC_IPCA_BY_MONTH_ID
+from datetime import datetime
+
+def total_invested_by_title(invest):
+    invested = invest[invest.category == 'valor aplicado']
+    return total_amount_by('title', invested)
 
 
-def total_return_for_month(invest, base_date):
-    """Total investiment return for the month on the base date."""
-    invest_for_month = records_for_month(invest, base_date)
-    return invest_for_month[invest_for_month.category == 'rendimento']\
-        [['title', 'amount']].set_index('title')
+def invested_previous_month(invest, base_date):
+    invest_previous_month = records_for_previous_month(invest, base_date)
+    return total_invested_by_title(invest_previous_month)
+
+
+def invested_for_month(invest, base_date):
+    invested = records_for_month(invest, base_date)
+    return total_invested_by_title(invested)
+
+
+def applications_for_month(incomes, base_date):
+    applications = records_for_month(incomes[incomes.category == 'aplicação'], base_date)
+    return total_amount_by('title', applications)
 
 
 def return_for_month(invest, base_date):
+    total_invested_previous_month = invested_previous_month(invest, base_date)
+    total_invested_for_month = invested_for_month(invest, base_date)
+    total_applications_for_month = applications_for_month(invest, base_date)
+
+    return total_invested_for_month \
+        .sub(total_invested_previous_month, fill_value=0) \
+        .sub(total_applications_for_month, fill_value=0)
+
+
+def describe_return_for_month(invest, base_date):
     """Returns total investiment return for month
     and its percentage given the investment history."""
-    past_invest = past_records_for_month(invest, base_date)
-    total_past_invest_by_title = total_amount_by('title', past_invest)
-    invest_return_for_month = total_return_for_month(invest, base_date)
-    invest_return_for_month_perc = invest_return_for_month / total_past_invest_by_title
+    invest_return_for_month = return_for_month(invest, base_date)
+    total_invested_previous_month = invested_previous_month(invest, base_date)
+    invest_return_for_month_perc = invest_return_for_month / total_invested_previous_month
     return invest_return_for_month, invest_return_for_month_perc
 
 
@@ -32,13 +54,12 @@ def return_with_inflation(return_perc, base_date):
         return pd.DataFrame(np.nan, index=return_perc.index, columns=[0])
 
 
-def summary_investiments(invest, base_date):
-    past_invest = past_records_for_month(invest, base_date)
-    invest_return_for_month, return_for_month_perc = return_for_month(invest, base_date)
+def summary_investiments_current_month(invest, base_date):
+    invest_return_for_month, return_for_month_perc = describe_return_for_month(invest, base_date)
 
     summary_columns = [
-        total_amount_by('title', invest),
-        total_amount_by('title', past_invest),
+        invested_for_month(invest, base_date),
+        invested_previous_month(invest, base_date),
         invest_return_for_month,
         return_for_month_perc,
         return_with_inflation(return_for_month_perc, base_date)
@@ -73,29 +94,12 @@ def style_summary_investments(summary, return_for_month_goal, return_with_inflat
                   subset=['Return with inflation (%)'])
 
 
-def summary_invest_by_category(invest, category):
-    invest_by_category = invest[invest.category == category]
-    total_invest_by_month = total_amount_by(groupby_month(invest_by_category), invest_by_category)
-    return total_invest_by_month
+def month_to_date(month):
+    return datetime.strptime(month, '%Y-%m').date()
 
 
-def summary_assets(invest):
-    cumulative_assets_by_month = cumulative_amount_by(groupby_month(invest), invest)
-
-    total_return_by_month = summary_invest_by_category(invest,'rendimento')
-    total_application_by_month = summary_invest_by_category(invest, 'aplicação')
-
-    return_proportion_by_month = total_return_by_month / cumulative_assets_by_month
-    application_proportion_by_month = total_application_by_month / cumulative_assets_by_month
-
-    assets_summary = pd.concat([cumulative_assets_by_month,
-                                total_return_by_month,
-                                return_proportion_by_month,
-                                total_application_by_month,
-                                application_proportion_by_month], axis=1, sort=False)
-
-    assets_summary.columns = ['Total', 'Return', 'Return / Total', 'Applications', 'Applications / Total']
-    return assets_summary
+def sum_amount_by_month(invest, months, select_data):
+    return months.map(lambda month: select_data(invest, month_to_date(month)).sum().amount)
 
 
 ASSETS_SUMMARY_COLS_FORMAT = {
@@ -105,6 +109,26 @@ ASSETS_SUMMARY_COLS_FORMAT = {
     'Applications': fmt.BR_CURRENCY_FORMAT,
     'Applications / Total': fmt.PERC_FORMAT
 }
+
+
+def summary_assets(invest):
+    months = pd.Series(groupby_month(invest).unique())
+
+    total = sum_amount_by_month(invest, months, invested_for_month)
+    invest_return = sum_amount_by_month(invest, months, return_for_month)
+    applications = sum_amount_by_month(invest, months, applications_for_month)
+
+    columns = ['date'] + list(ASSETS_SUMMARY_COLS_FORMAT.keys())
+
+    assets_summary = pd.DataFrame({'date': months,
+                                   'Total': total,
+                                   'Return': invest_return,
+                                   'Return / Total': invest_return / total,
+                                   'Applications': applications,
+                                   'Applications / Total': applications / total},
+                                  columns=columns).set_index('date')
+    return assets_summary
+
 
 
 def style_summary_assets(summary):
