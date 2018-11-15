@@ -34,19 +34,28 @@ def style_summary_expenses(summary, balance_goal):
         .applymap(fmt.red_to_green_background(balance_goal), subset=['Balance (%)'])
 
 
-def expenses_distribution(expenses):
-    total_expenses_by_category = total_amount_by('category', expenses)
-    total_expenses_by_category = total_expenses_by_category[total_expenses_by_category.amount < 0]
-    total_spent_on_month = expenses.amount.sum()
-    distribution_by_category = total_expenses_by_category / total_spent_on_month
-    distribution = pd.concat([distribution_by_category, total_expenses_by_category], axis=1)
-    distribution.columns = ["amount %", "amount #"]
-    return distribution.sort_values('amount %', ascending=False)
+def expense_distribution(expenses, denominator):
+    denominator_sum = denominator.amount.sum()
+    expenses_by_category = total_amount_by('category', expenses).sort_values('amount')
+    return expenses_by_category / denominator_sum
+
+
+def describe_expenses(expenses, incomes):
+    expenses_by_category = total_amount_by('category', expenses)
+    dist_by_spent = expense_distribution(expenses, expenses)
+    dist_by_income = expense_distribution(expenses,
+                                          incomes[incomes.category == 'renda']) * -1
+
+    return pd.DataFrame({'amount #': expenses_by_category.amount,
+                         '% by expenses': dist_by_spent.amount,
+                         '% by income': dist_by_income.amount},
+                        columns=['amount #', '% by expenses', '% by income']).sort_values('amount #')
 
 
 EXPENSES_DISTRIBUTION_COLS_FORMAT = {
-    'amount %': fmt.PERC_FORMAT,
-    'amount #': fmt.BR_CURRENCY_FORMAT
+    'amount #': fmt.BR_CURRENCY_FORMAT,
+    '% by expenses': fmt.PERC_FORMAT,
+    '% by income': fmt.PERC_FORMAT
 }
 
 
