@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import formatting as fmt
 import seaborn as sns
-from record_summary import total_amount_by, cumulative_amount_by, groupby_month
+from record_summary import *
 from date_helpers import records_for_month, past_records_for_month, records_for_previous_month
 from central_bank_data import central_bank_metric, BC_IPCA_BY_MONTH_ID
 from datetime import datetime
@@ -94,10 +94,6 @@ def style_summary_investments(summary, return_for_month_goal, return_with_inflat
                   subset=['Return with inflation (%)'])
 
 
-def month_to_date(month):
-    return datetime.strptime(month, '%Y-%m').date()
-
-
 def sum_amount_by_month(invest, months, select_data):
     return months.map(lambda month: select_data(invest, month_to_date(month)).sum().amount)
 
@@ -112,7 +108,7 @@ ASSETS_SUMMARY_COLS_FORMAT = {
 
 
 def summary_assets(invest):
-    months = pd.Series(groupby_month(invest).unique())
+    months = available_months(invest)
 
     total = sum_amount_by_month(invest, months, invested_for_month)
     invest_return = sum_amount_by_month(invest, months, return_for_month)

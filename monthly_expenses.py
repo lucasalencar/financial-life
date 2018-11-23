@@ -1,6 +1,9 @@
 import pandas as pd
+import numpy as np
+import seaborn
 import formatting as fmt
-from record_summary import total_amount_by
+from record_summary import *
+from date_helpers import records_for_month
 
 def balance(expense, income):
     """Computes balance based on expenses and incomes.
@@ -61,3 +64,33 @@ EXPENSES_DISTRIBUTION_COLS_FORMAT = {
 
 def style_expenses_distribution(dist):
     return dist.style.format(EXPENSES_DISTRIBUTION_COLS_FORMAT)
+
+
+def _expenses_over_time_(expenses, incomes, post_describe_fn):
+    """Computes expenses distribution over time, for all months available in expenses"""
+    exps = {}
+    for month in available_months(expenses):
+        exps[month] = post_describe_fn(
+            describe_expenses(records_for_month(expenses, month_to_date(month)),
+                              records_for_month(incomes, month_to_date(month))))
+    return pd.DataFrame(exps, columns=sorted(exps.keys()))\
+        .replace([np.inf, -np.inf], np.nan).fillna(0).transpose()
+
+
+def expenses_over_time(expenses, incomes, column):
+    """Computes expenses distribution over time, for all months available in expenses"""
+    post_describe_fn = None
+    if column == 'amount #':
+        post_describe_fn = lambda x: x['amount #'] * -1
+    else:
+        post_describe_fn = lambda x: x[column]
+    return _expenses_over_time_(expenses, incomes, post_describe_fn)
+
+
+def plot_expenses_over_time(expenses):
+    """Line plots for expenses over time"""
+    data = expenses.reset_index().rename(columns={'index': 'date'})
+    plt = data.plot(figsize=(20, 5), grid=True, fontsize=15, xticks=data.index)
+    plt.set_xticklabels(data.date)
+    plt.legend(fontsize=15)
+    return plt
