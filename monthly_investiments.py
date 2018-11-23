@@ -140,6 +140,14 @@ def style_summary_assets(summary):
         .background_gradient(cmap=cm, subset=background_subset)
 
 
+def plot_assets_summary(data, start_date):
+    summary = data.loc[start_date:].reset_index()
+    plt = summary.plot(figsize=(20, 5), grid=True, fontsize=15, xticks=summary.index)
+    plt.set_xticklabels(summary.date)
+    plt.legend(fontsize=15)
+    return plt
+
+
 def style_assets_goals(assets_goals, assets_thresh):
     return assets_goals.style\
         .format({'amount': fmt.BR_CURRENCY_FORMAT})\
