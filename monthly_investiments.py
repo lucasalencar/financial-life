@@ -7,19 +7,19 @@ from date_helpers import records_for_month, past_records_for_month, records_for_
 from central_bank_data import central_bank_metric, BC_IPCA_BY_MONTH_ID
 from datetime import datetime
 
-def total_invested_by_title(invest):
+def total_invested_by(invest, column):
     invested = invest[invest.category == 'valor aplicado']
-    return total_amount_by('title', invested)
+    return total_amount_by(column, invested)
 
 
-def invested_previous_month(invest, base_date):
+def invested_previous_month_by(invest, base_date, column):
     invest_previous_month = records_for_previous_month(invest, base_date)
-    return total_invested_by_title(invest_previous_month)
+    return total_invested_by(invest_previous_month, column)
 
 
-def invested_for_month(invest, base_date):
+def invested_for_month_by(invest, base_date, column):
     invested = records_for_month(invest, base_date)
-    return total_invested_by_title(invested)
+    return total_invested_by(invested, column)
 
 
 def applications_for_month(incomes, base_date):
@@ -28,8 +28,8 @@ def applications_for_month(incomes, base_date):
 
 
 def return_for_month(invest, base_date):
-    total_invested_previous_month = invested_previous_month(invest, base_date)
-    total_invested_for_month = invested_for_month(invest, base_date)
+    total_invested_previous_month = invested_previous_month_by(invest, base_date, 'title')
+    total_invested_for_month = invested_for_month_by(invest, base_date, 'title')
     total_applications_for_month = applications_for_month(invest, base_date)
 
     return total_invested_for_month \
@@ -41,7 +41,7 @@ def describe_return_for_month(invest, base_date):
     """Returns total investiment return for month
     and its percentage given the investment history."""
     invest_return_for_month = return_for_month(invest, base_date)
-    total_invested_previous_month = invested_previous_month(invest, base_date)
+    total_invested_previous_month = invested_previous_month_by(invest, base_date, 'title')
     invest_return_for_month_perc = invest_return_for_month / total_invested_previous_month
     return invest_return_for_month, invest_return_for_month_perc
 
@@ -58,8 +58,8 @@ def summary_investiments_current_month(invest, base_date):
     invest_return_for_month, return_for_month_perc = describe_return_for_month(invest, base_date)
 
     summary_columns = [
-        invested_for_month(invest, base_date),
-        invested_previous_month(invest, base_date),
+        invested_for_month_by(invest, base_date, 'title'),
+        invested_previous_month_by(invest, base_date, 'title'),
         invest_return_for_month,
         return_for_month_perc,
         return_with_inflation(return_for_month_perc, base_date)
@@ -110,7 +110,8 @@ ASSETS_SUMMARY_COLS_FORMAT = {
 def summary_assets(invest):
     months = available_months(invest)
 
-    total = sum_amount_by_month(invest, months, invested_for_month)
+    total = sum_amount_by_month(invest, months,
+                                lambda invest, base_date: invested_for_month_by(invest, base_date, 'title'))
     invest_return = sum_amount_by_month(invest, months, return_for_month)
     applications = sum_amount_by_month(invest, months, applications_for_month)
 
@@ -138,6 +139,13 @@ def style_summary_assets(summary):
     return summary.style\
         .format(ASSETS_SUMMARY_COLS_FORMAT)\
         .background_gradient(cmap=cm, subset=background_subset)
+
+
+def plot_invest_type_distribution(invest, base_date):
+    invested_by_type = invested_for_month_by(invest, base_date, 'type')
+    type_distribution = (invested_by_type / invested_by_type.sum()).sort_values('amount')
+    return type_distribution.plot.pie(y='amount', figsize=(10,10), autopct='%1.1f%%', fontsize=15,
+                                      legend=False, title="Distribuição por categoria")
 
 
 def plot_assets_summary(data, start_date):
