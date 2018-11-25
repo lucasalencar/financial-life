@@ -37,6 +37,15 @@ def style_summary_expenses(summary, balance_goal):
         .applymap(fmt.red_to_green_background(balance_goal), subset=['Balance (%)'])
 
 
+def plot_expenses_summary(monthly_exp):
+    data = monthly_exp.copy()[['Expenses', 'Incomes', 'Balance']].reset_index().rename(columns={'index': 'date'})
+    data['Expenses'] = data['Expenses'] * -1
+    plt = data.plot(figsize=(20, 10), grid=True, fontsize=15, color=['r', 'g', 'b'], xticks=data.index)
+    plt.set_xticklabels(data.date)
+    plt.legend(fontsize=20)
+    return plt
+
+
 def expense_distribution(expenses, denominator):
     denominator_sum = denominator.amount.sum()
     expenses_by_category = total_amount_by('category', expenses).sort_values('amount')
