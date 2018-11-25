@@ -94,6 +94,24 @@ def style_summary_investments(summary, return_for_month_goal, return_with_inflat
                   subset=['Return with inflation (%)'])
 
 
+def return_over_time(invest, column):
+    if column in ['Return for month', 'Return for month (%)', 'Return with inflation (%)']:
+        return describe_over_time(invest,
+                                  lambda data, date:
+                                  summary_investiments_current_month(data, date)[column])
+    else:
+        print('Unknown column', column, 'to compute return over time.')
+        return None
+
+
+def plot_return_over_time(return_over_time):
+    data = return_over_time.reset_index().rename(columns={'index': 'date'})
+    plt = data.plot(figsize=(20, 10), grid=True, fontsize=15, xticks=data.index)
+    plt.set_xticklabels(data.date)
+    plt.legend(fontsize=15)
+    return plt
+
+
 def sum_amount_by_month(invest, months, select_data):
     return months.map(lambda month: select_data(invest, month_to_date(month)).sum().amount)
 

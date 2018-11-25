@@ -68,13 +68,10 @@ def style_expenses_distribution(dist):
 
 def _expenses_over_time_(expenses, incomes, post_describe_fn):
     """Computes expenses distribution over time, for all months available in expenses"""
-    exps = {}
-    for month in available_months(expenses):
-        exps[month] = post_describe_fn(
-            describe_expenses(records_for_month(expenses, month_to_date(month)),
-                              records_for_month(incomes, month_to_date(month))))
-    return pd.DataFrame(exps, columns=sorted(exps.keys()))\
-        .replace([np.inf, -np.inf], np.nan).fillna(0).transpose()
+    return describe_over_time(expenses,
+                              lambda exps, date: post_describe_fn(
+                                  describe_expenses(records_for_month(expenses, date),
+                                                    records_for_month(incomes, date))))
 
 
 def expenses_over_time(expenses, incomes, column):
