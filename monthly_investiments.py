@@ -37,13 +37,15 @@ def return_for_month(invest, base_date):
         .sub(total_applications_for_month, fill_value=0)
 
 
-def describe_return_for_month(invest, base_date):
-    """Returns total investiment return for month
-    and its percentage given the investment history."""
-    invest_return_for_month = return_for_month(invest, base_date)
-    total_invested_previous_month = invested_previous_month_by(invest, base_date, 'title')
-    invest_return_for_month_perc = invest_return_for_month / total_invested_previous_month
-    return invest_return_for_month, invest_return_for_month_perc
+def return_for_month_percentage(invest_return_for_month, invested_previous_month):
+    return invest_return_for_month / invested_previous_month
+
+
+def return_for_month_percentage_heavy(invest, base_date):
+    """Computes percentage of return but starting from the raw data,
+    without depending on preprocessed data."""
+    return return_for_month_percentage(return_for_month(invest, base_date),
+                                       invested_previous_month_by(invest, base_date, 'title'))
 
 
 def return_with_inflation(return_perc, base_date):
@@ -55,14 +57,16 @@ def return_with_inflation(return_perc, base_date):
 
 
 def summary_investiments_current_month(invest, base_date):
-    invest_return_for_month, return_for_month_perc = describe_return_for_month(invest, base_date)
+    invest_return_for_month = return_for_month(invest, base_date)
+    invested_previous_month = invested_previous_month_by(invest, base_date, 'title')
+    invest_return_for_month_perc = return_for_month_percentage(invest_return_for_month, invested_previous_month)
 
     summary_columns = [
         invested_for_month_by(invest, base_date, 'title'),
-        invested_previous_month_by(invest, base_date, 'title'),
+        invested_previous_month,
         invest_return_for_month,
-        return_for_month_perc,
-        return_with_inflation(return_for_month_perc, base_date)
+        invest_return_for_month_perc,
+        return_with_inflation(invest_return_for_month_perc, base_date)
     ]
 
     summary_invest = pd.concat(summary_columns, axis=1, sort=False)
@@ -94,19 +98,27 @@ def style_summary_investments(summary, return_for_month_goal, return_with_inflat
                   subset=['Return with inflation (%)'])
 
 
-def return_over_time(invest, column):
-    if column in ['Return for month', 'Return for month (%)', 'Return with inflation (%)']:
-        return describe_over_time(invest,
-                                  lambda data, date:
-                                  summary_investiments_current_month(data, date)[column])
-    else:
-        print('Unknown column', column, 'to compute return over time.')
-        return None
+def return_over_time(invest):
+    return describe_over_time(invest,
+                              lambda data, date:
+                                return_for_month(data, date).amount)
 
 
-def plot_return_over_time(return_over_time):
+def return_percentage_over_time(invest):
+    return describe_over_time(invest,
+                              lambda data, date:
+                                return_for_month_percentage_heavy(data, date).amount)
+
+
+def cumulative_return_over_time(invest):
+    return describe_over_time(invest,
+                              lambda data, date:
+                                return_for_month(data, date).amount).cumsum()
+
+
+def plot_return_over_time(return_over_time, title):
     data = return_over_time.reset_index().rename(columns={'index': 'date'})
-    plt = data.plot(figsize=(20, 10), grid=True, fontsize=15, xticks=data.index)
+    plt = data.plot(title=title, figsize=(20, 10), grid=True, fontsize=15, xticks=data.index)
     plt.set_xticklabels(data.date)
     plt.legend(fontsize=15)
     return plt
