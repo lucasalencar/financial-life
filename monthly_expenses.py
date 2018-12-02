@@ -91,12 +91,3 @@ def expenses_over_time(expenses, incomes, column):
     else:
         post_describe_fn = lambda x: x[column]
     return _expenses_over_time_(expenses, incomes, post_describe_fn)
-
-
-def plot_expenses_over_time(expenses):
-    """Line plots for expenses over time"""
-    data = expenses.reset_index().rename(columns={'index': 'date'})
-    plt = data.plot(figsize=(20, 5), grid=True, fontsize=15, xticks=data.index)
-    plt.set_xticklabels(data.date)
-    plt.legend(fontsize=15)
-    return plt

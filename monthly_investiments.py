@@ -108,14 +108,6 @@ def cumulative_return_over_time(invest):
                                 return_for_month(data, date).amount).cumsum()
 
 
-def plot_return_over_time(return_over_time, title):
-    data = return_over_time.reset_index().rename(columns={'index': 'date'})
-    plt = data.plot(title=title, figsize=(20, 7), grid=True, fontsize=15, xticks=data.index)
-    plt.set_xticklabels(data.date)
-    plt.legend(fontsize=15)
-    return plt
-
-
 ASSETS_SUMMARY_COLS_FORMAT = {
     'Total': fmt.BR_CURRENCY_FORMAT,
     'Return': fmt.BR_CURRENCY_FORMAT,
@@ -163,14 +155,6 @@ def plot_invest_type_distribution(invest, base_date):
     type_distribution = (invested_by_type / invested_by_type.sum()).sort_values('amount')
     return type_distribution.plot.pie(y='amount', figsize=(10,10), autopct='%1.1f%%', fontsize=15,
                                       legend=False, title="Distribuição por categoria")
-
-
-def plot_assets_summary(data, start_date):
-    summary = data.copy().loc[start_date:].reset_index().rename(columns={'index': 'date'})
-    plt = summary.plot(figsize=(20, 5), grid=True, fontsize=15, xticks=summary.index)
-    plt.set_xticklabels(summary.date)
-    plt.legend(fontsize=15)
-    return plt
 
 
 def style_assets_goals(assets_goals, assets_thresh):
