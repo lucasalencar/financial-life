@@ -53,30 +53,22 @@ def return_with_inflation(return_perc, base_date):
     if ipca is not None:
         return return_perc - ipca
     else:
-        return pd.DataFrame(np.nan, index=return_perc.index, columns=[0])
+        return pd.DataFrame(np.nan, index=return_perc.index, columns=['amount'])
 
 
-def summary_investiments_current_month(invest, base_date):
+def summary_investments_current_month(invest, base_date):
     invest_return_for_month = return_for_month(invest, base_date)
     invested_previous_month = invested_previous_month_by(invest, base_date, 'title')
     invest_return_for_month_perc = return_for_month_percentage(invest_return_for_month, invested_previous_month)
 
-    summary_columns = [
-        invested_for_month_by(invest, base_date, 'title'),
-        invested_previous_month,
-        invest_return_for_month,
-        invest_return_for_month_perc,
-        return_with_inflation(invest_return_for_month_perc, base_date)
-    ]
+    summary = {'Total': invested_for_month_by(invest, base_date, 'title').amount,
+               'Total last month': invested_previous_month.amount,
+               'Return for month': invest_return_for_month.amount,
+               'Return for month (%)': invest_return_for_month_perc.amount,
+               'Return with inflation (%)': return_with_inflation(invest_return_for_month_perc, base_date).amount}
 
-    summary_invest = pd.concat(summary_columns, axis=1, sort=False)
-    summary_invest.columns = [
-        'Total',
-        'Total last month',
-        'Return for month',
-        'Return for month (%)',
-        'Return with inflation (%)'
-    ]
+    summary_columns = summary.keys()
+    summary_invest = pd.DataFrame(summary, columns=list(summary_columns))
     return summary_invest[summary_invest['Total'] > 0]
 
 
