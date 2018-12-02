@@ -110,7 +110,7 @@ def cumulative_return_over_time(invest):
 
 def plot_return_over_time(return_over_time, title):
     data = return_over_time.reset_index().rename(columns={'index': 'date'})
-    plt = data.plot(title=title, figsize=(20, 10), grid=True, fontsize=15, xticks=data.index)
+    plt = data.plot(title=title, figsize=(20, 7), grid=True, fontsize=15, xticks=data.index)
     plt.set_xticklabels(data.date)
     plt.legend(fontsize=15)
     return plt
