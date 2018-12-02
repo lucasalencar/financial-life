@@ -133,19 +133,19 @@ def summary_assets(invest):
     months = available_months(invest)
 
     total = sum_amount_by_month(invest, months,
-                                lambda invest, base_date: invested_for_month_by(invest, base_date, 'title'))
+                                lambda invest, base_date:
+                                    invested_for_month_by(invest, base_date, 'title'))
     invest_return = sum_amount_by_month(invest, months, return_for_month)
     applications = sum_amount_by_month(invest, months, applications_for_month)
 
-    columns = ['date'] + list(ASSETS_SUMMARY_COLS_FORMAT.keys())
+    summary = {'date': months,
+               'Total': total,
+               'Return': invest_return,
+               'Return / Total': invest_return / total,
+               'Applications': applications,
+               'Applications / Total': applications / total}
 
-    assets_summary = pd.DataFrame({'date': months,
-                                   'Total': total,
-                                   'Return': invest_return,
-                                   'Return / Total': invest_return / total,
-                                   'Applications': applications,
-                                   'Applications / Total': applications / total},
-                                  columns=columns).set_index('date')
+    assets_summary = pd.DataFrame(summary, columns=list(summary.keys())).set_index('date')
     return assets_summary
 
 
