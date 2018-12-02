@@ -116,10 +116,6 @@ def plot_return_over_time(return_over_time, title):
     return plt
 
 
-def sum_amount_by_month(invest, months, select_data):
-    return months.map(lambda month: select_data(invest, month_to_date(month)).sum().amount)
-
-
 ASSETS_SUMMARY_COLS_FORMAT = {
     'Total': fmt.BR_CURRENCY_FORMAT,
     'Return': fmt.BR_CURRENCY_FORMAT,
@@ -128,26 +124,25 @@ ASSETS_SUMMARY_COLS_FORMAT = {
     'Applications / Total': fmt.PERC_FORMAT
 }
 
-
 def summary_assets(invest):
-    months = available_months(invest)
+    total = describe_over_time(invest,
+                               lambda data, date:
+                                   invested_for_month_by(invest, date, 'title').sum()).amount
+    invest_return = describe_over_time(invest,
+                                       lambda data, date:
+                                           return_for_month(data, date).sum()).amount
+    applications = describe_over_time(invest,
+                                      lambda data, date:
+                                          applications_for_month(data, date).sum()).amount
 
-    total = sum_amount_by_month(invest, months,
-                                lambda invest, base_date:
-                                    invested_for_month_by(invest, base_date, 'title'))
-    invest_return = sum_amount_by_month(invest, months, return_for_month)
-    applications = sum_amount_by_month(invest, months, applications_for_month)
-
-    summary = {'date': months,
-               'Total': total,
+    summary = {'Total': total,
                'Return': invest_return,
                'Return / Total': invest_return / total,
                'Applications': applications,
                'Applications / Total': applications / total}
 
-    assets_summary = pd.DataFrame(summary, columns=list(summary.keys())).set_index('date')
+    assets_summary = pd.DataFrame(summary, columns=list(summary.keys()))
     return assets_summary
-
 
 
 def style_summary_assets(summary):
@@ -171,7 +166,7 @@ def plot_invest_type_distribution(invest, base_date):
 
 
 def plot_assets_summary(data, start_date):
-    summary = data.loc[start_date:].reset_index()
+    summary = data.copy().loc[start_date:].reset_index().rename(columns={'index': 'date'})
     plt = summary.plot(figsize=(20, 5), grid=True, fontsize=15, xticks=summary.index)
     plt.set_xticklabels(summary.date)
     plt.legend(fontsize=15)
