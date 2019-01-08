@@ -11,10 +11,5 @@ mv $DOWNLOAD_FOLDER/nubank*.csv ./data/
 # Spliwise csv exports from mobile app
 mv $DOWNLOAD_FOLDER/Splitwise*.csv ./data/
 
-# Remove current splitwise exports only if there is another to move
-if [ -f $DOWNLOAD_FOLDER/mozi-e-eu*.csv ]; then
-  rm ./data/mozi-e-eu*.csv
-fi
-
 # Spliwise csv exports from site
-mv $DOWNLOAD_FOLDER/mozi-e-eu*.csv ./data/
+mv $DOWNLOAD_FOLDER/20*mozi-e-eu*.csv ./data/
