@@ -1,15 +1,18 @@
 #!/bin/bash
 
-DOWNLOAD_FOLDER="$HOME/Downloads"
+SOURCE_FOLDER=$(cat .source-folder)
+DEST_FOLDER=$(cat .dest-folder)
 
-# Other accounts csv exports
-mv $DOWNLOAD_FOLDER/Extrato\ outras\ contas*.csv ./data/
+DATA_FOLDER="./data"
 
-# Nubank csv exports
-mv $DOWNLOAD_FOLDER/nubank*.csv ./data/
+## Other accounts csv exports
+mv $SOURCE_FOLDER/Extrato\ outras\ contas*.csv "$DEST_FOLDER"
 
-# Spliwise csv exports from mobile app
-mv $DOWNLOAD_FOLDER/Splitwise*.csv ./data/
+## Nubank csv exports
+mv $SOURCE_FOLDER/nubank*.csv "$DEST_FOLDER"
 
-# Spliwise csv exports from site
-mv $DOWNLOAD_FOLDER/20*mozi-e-eu*.csv ./data/
+## Spliwise csv exports from site
+mv $SOURCE_FOLDER/20*mozi-e-eu*.csv "$DEST_FOLDER"
+
+## Symbolic link for everything that is on $DEST_FOLDER to data
+ln -s "$DEST_FOLDER"/*.csv $DATA_FOLDER

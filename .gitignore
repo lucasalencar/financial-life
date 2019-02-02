@@ -3,3 +3,6 @@ data/*
 
 .ipynb_checkpoints
 __pycache__/
+
+.source-folder
+.dest-folder
