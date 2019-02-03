@@ -44,6 +44,8 @@ def preprocess(expenses, person_name):
     expenses = expenses.loc[expenses['category'] != 'Pagamento']
     # Remove Saldo total expense
     expenses = expenses.loc[expenses['title'] != 'Saldo total']
+    # Remove Saldo total expense
+    expenses = expenses.loc[expenses['title'] != 'Quitar todos os saldos']
     # Because default preprocess converts values to negative,
     # return amount to original values
     expenses['amount'] = expenses['amount'] * -1
