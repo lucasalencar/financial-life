@@ -15,4 +15,4 @@ mv $SOURCE_FOLDER/nubank*.csv "$DEST_FOLDER"
 mv $SOURCE_FOLDER/20*mozi-e-eu*.csv "$DEST_FOLDER"
 
 ## Symbolic link for everything that is on $DEST_FOLDER to data
-ln -s "$DEST_FOLDER"/*.csv $DATA_FOLDER
+ln -sf "$DEST_FOLDER"/*.csv $DATA_FOLDER
