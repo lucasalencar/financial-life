@@ -27,14 +27,21 @@ def applications_for_month(incomes, base_date):
     return total_amount_by('title', applications)
 
 
+def discounts_for_month(incomes, base_date):
+    discounts = records_for_month(incomes[incomes.category == 'desconto'], base_date)
+    return total_amount_by('title', discounts)
+
+
 def return_for_month(invest, base_date):
     total_invested_previous_month = invested_previous_month_by(invest, base_date, 'title')
     total_invested_for_month = invested_for_month_by(invest, base_date, 'title')
     total_applications_for_month = applications_for_month(invest, base_date)
+    total_discounts_for_month = discounts_for_month(invest, base_date)
 
     return total_invested_for_month \
         .sub(total_invested_previous_month, fill_value=0) \
-        .sub(total_applications_for_month, fill_value=0)
+        .sub(total_applications_for_month, fill_value=0) \
+        .add(total_discounts_for_month, fill_value=0)
 
 
 def return_for_month_percentage(invest_return_for_month, invested_previous_month):
@@ -67,8 +74,7 @@ def summary_investments_current_month(invest, base_date):
                'Return for month (%)': invest_return_for_month_perc.amount,
                'Return with inflation (%)': return_with_inflation(invest_return_for_month_perc, base_date).amount}
 
-    summary_columns = summary.keys()
-    summary_invest = pd.DataFrame(summary, columns=list(summary_columns))
+    summary_invest = pd.DataFrame(summary, columns=list(summary.keys()))
     return summary_invest[summary_invest['Total'] > 0]
 
 
