@@ -18,4 +18,4 @@ def preprocess(incomes):
 
 def load(file_pattern=None, incomes_file_pattern=None, data_path=None, **configs):
     pattern = file_pattern or incomes_file_pattern
-    return preprocess(read.read_first_csv_found(data_path, pattern))
+    return preprocess(read.read_all_csv_found(data_path, pattern))
