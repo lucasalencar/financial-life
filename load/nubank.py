@@ -11,4 +11,4 @@ def preprocess(expenses):
 
 
 def load(file_pattern=None, data_path=None, **configs):
-    return preprocess(read.read_all_csvs(data_path, file_pattern))
+    return preprocess(read.read_all_csv_found(data_path, file_pattern))
