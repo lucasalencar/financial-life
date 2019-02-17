@@ -45,19 +45,15 @@ def applications_for_month(incomes, base_date):
     return total_amount_by('title', applications)
 
 
-def discounts_for_month(incomes, base_date):
-    """Total discounts on current month given base_date"""
-    discounts = records_for_month(ft.discounts(incomes), base_date)
-    return total_amount_by('title', discounts)
-
-
 def return_for_month(invest, base_date):
     """Total return on current month given base_date"""
-    invested_previous_month = invested_previous_month_by('title', invest,
-                                                         base_date)
-    invested_for_month = invested_for_month_by('title', invest, base_date)
-    applications_month = applications_for_month(invest, base_date)
-    discounts_month = discounts_for_month(invest, base_date)
+    past_month = records_for_previous_month(invest, base_date)
+    current_month = records_for_month(invest, base_date)
+
+    invested_previous_month = total_invested_by('title', past_month)
+    invested_for_month = total_invested_by('title', current_month)
+    applications_month = total_applications_by('title', current_month)
+    discounts_month = total_discounts_by('title', current_month)
 
     return invested_for_month \
         .sub(invested_previous_month, fill_value=0) \
