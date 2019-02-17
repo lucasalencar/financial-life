@@ -122,3 +122,16 @@ def style_assets_goals(assets_goals, assets_thresh):
     return assets_goals.style\
         .format({'amount': fmt.BR_CURRENCY_FORMAT})\
         .applymap(fmt.green_background_threshold(assets_thresh))
+
+
+def finished_invests(invest):
+    applications = tt.total_applications_by('title', invest)
+    return applications[applications.amount <= 0]
+
+
+def invests_final_return(incomes):
+    applications = tt.total_applications_by('title', incomes[incomes.amount > 0])
+    liquidations = tt.total_income_by('title', incomes)
+    discounts = tt.total_discounts_by('title', incomes)
+
+    return liquidations.sub(applications, fill_value=0).add(discounts, fill_value=0)
