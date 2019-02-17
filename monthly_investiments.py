@@ -115,7 +115,8 @@ def style_summary_assets(summary):
 
 
 def plot_invest_type_distribution(invest, base_date):
-    invested_by_type = tt.invested_for_month_by('type', invest, base_date)
+    current_month = records_for_month(invest, base_date)
+    invested_by_type = tt.total_invested_by('type', current_month)
     type_distribution = (invested_by_type / invested_by_type.sum()).sort_values('amount')
     return type_distribution.plot.pie(y='amount', figsize=(10,10), autopct='%1.1f%%', fontsize=15,
                                       legend=False, title="Distribuição por categoria")
