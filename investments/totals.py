@@ -12,6 +12,21 @@ def total_invested_by(column, invest):
     return total_amount_by(column, ft.invested(invest))
 
 
+def total_applications_by(column, invest):
+    """Total applications grouped by column"""
+    return total_amount_by(column, ft.applications(invest))
+
+
+def total_income_by(column, incomes):
+    """Total incomes/salaries grouped by column"""
+    return total_amount_by(column, ft.income(incomes))
+
+
+def total_discounts_by(column, incomes):
+    """Total discounts grouped by column"""
+    return total_amount_by(column, ft.discounts(incomes))
+
+
 def invested_previous_month_by(column, invest, base_date):
     """Total invested on previous month given base_date"""
     invest_previous_month = records_for_previous_month(invest, base_date)
