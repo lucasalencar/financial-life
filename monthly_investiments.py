@@ -1,22 +1,27 @@
-import pandas as pd
-import formatting as fmt
-import seaborn as sns
-from record_summary import *
+# pylint: disable=C0111
 
-from investments import filters as ft
+import pandas as pd
+import seaborn as sns
+import formatting as fmt
+from record_summary import describe_over_time
+
 from investments import totals as tt
 
 
 def summary_investments_current_month(invest, base_date):
     invest_return_for_month = tt.return_for_month(invest, base_date)
-    invested_previous_month = tt.invested_previous_month_by('title', invest, base_date)
-    invest_return_for_month_perc = tt.return_for_month_percentage(invest_return_for_month, invested_previous_month)
+    invested_previous_month = tt.invested_previous_month_by('title', invest,
+                                                            base_date)
+    invest_return_for_month_perc = tt.return_for_month_percentage(
+        invest_return_for_month, invested_previous_month)
 
-    summary = {'Total': tt.invested_for_month_by('title', invest, base_date).amount,
+    summary = {'Total': tt.invested_for_month_by('title', invest,
+                                                 base_date).amount,
                'Total last month': invested_previous_month.amount,
                'Return for month': invest_return_for_month.amount,
                'Return for month (%)': invest_return_for_month_perc.amount,
-               'Return with inflation (%)': tt.return_with_inflation(invest_return_for_month_perc, base_date).amount}
+               'Return with inflation (%)': tt.return_with_inflation(
+                   invest_return_for_month_perc, base_date).amount}
 
     summary_invest = pd.DataFrame(summary, columns=list(summary.keys()))
     return summary_invest[summary_invest['Total'] > 0]
@@ -31,7 +36,8 @@ MONTHLY_INVEST_COLS_FORMAT = {
 }
 
 
-def style_summary_investments(summary, return_for_month_goal, return_with_inflation_goal):
+def style_summary_investments(summary, return_for_month_goal,
+                              return_with_inflation_goal):
     return summary.style\
         .format(MONTHLY_INVEST_COLS_FORMAT)\
         .applymap(fmt.red_to_green_background(return_for_month_goal),
@@ -43,19 +49,20 @@ def style_summary_investments(summary, return_for_month_goal, return_with_inflat
 def return_over_time(invest):
     return describe_over_time(invest,
                               lambda data, date:
-                                tt.return_for_month(data, date).amount)
+                              tt.return_for_month(data, date).amount)
 
 
 def return_percentage_over_time(invest):
     return describe_over_time(invest,
                               lambda data, date:
-                                tt.return_for_month_percentage_heavy(data, date).amount)
+                              tt.return_for_month_percentage_heavy(
+                                  data, date).amount)
 
 
 def cumulative_return_over_time(invest):
     return describe_over_time(invest,
                               lambda data, date:
-                                tt.return_for_month(data, date).amount).cumsum()
+                              tt.return_for_month(data, date).amount).cumsum()
 
 
 ASSETS_SUMMARY_COLS_FORMAT = {
@@ -66,16 +73,20 @@ ASSETS_SUMMARY_COLS_FORMAT = {
     'Applications / Total': fmt.PERC_FORMAT
 }
 
+
 def summary_assets(invest):
     total = describe_over_time(invest,
                                lambda data, date:
-                                   tt.invested_for_month_by('title', invest, date).sum()).amount
+                               tt.invested_for_month_by('title', invest, date)
+                               .sum()).amount
     invest_return = describe_over_time(invest,
                                        lambda data, date:
-                                           tt.return_for_month(data, date).sum()).amount
+                                       tt.return_for_month(data, date)
+                                       .sum()).amount
     applications = describe_over_time(invest,
                                       lambda data, date:
-                                          tt.applications_for_month(data, date).sum()).amount
+                                      tt.applications_for_month(data, date)
+                                      .sum()).amount
 
     summary = {'Total': total,
                'Return': invest_return,
