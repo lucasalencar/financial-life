@@ -27,12 +27,6 @@ def total_discounts_by(column, incomes):
     return total_amount_by(column, ft.discounts(incomes))
 
 
-def invested_previous_month_by(column, invest, base_date):
-    """Total invested on previous month given base_date"""
-    invest_previous_month = records_for_previous_month(invest, base_date)
-    return total_invested_by(column, invest_previous_month)
-
-
 def invested_for_month_by(column, invest, base_date):
     """Total invested on current month given base_date"""
     invested = records_for_month(invest, base_date)
@@ -73,8 +67,8 @@ def return_for_month_percentage_heavy(invest, base_date):
     because it computes all data dependencies instead of receiving
     some of the pre computed"""
     month_return = return_for_month(invest, base_date)
-    invested_last_month = invested_previous_month_by('title', invest,
-                                                     base_date)
+    past_month = records_for_previous_month(invest, base_date)
+    invested_last_month = total_invested_by('title', past_month)
     return return_for_month_percentage(month_return, invested_last_month)
 
 
