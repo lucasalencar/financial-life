@@ -1,78 +1,22 @@
 import pandas as pd
-import numpy as np
 import formatting as fmt
 import seaborn as sns
 from record_summary import *
-from date_helpers import records_for_month, past_records_for_month, records_for_previous_month
-from central_bank_data import central_bank_metric, BC_IPCA_BY_MONTH_ID
-from datetime import datetime
 
-def total_invested_by(invest, column):
-    invested = invest[invest.category == 'valor aplicado']
-    return total_amount_by(column, invested)
-
-
-def invested_previous_month_by(invest, base_date, column):
-    invest_previous_month = records_for_previous_month(invest, base_date)
-    return total_invested_by(invest_previous_month, column)
-
-
-def invested_for_month_by(invest, base_date, column):
-    invested = records_for_month(invest, base_date)
-    return total_invested_by(invested, column)
-
-
-def applications_for_month(incomes, base_date):
-    applications = records_for_month(incomes[incomes.category == 'aplicação'], base_date)
-    return total_amount_by('title', applications)
-
-
-def discounts_for_month(incomes, base_date):
-    discounts = records_for_month(incomes[incomes.category == 'desconto'], base_date)
-    return total_amount_by('title', discounts)
-
-
-def return_for_month(invest, base_date):
-    total_invested_previous_month = invested_previous_month_by(invest, base_date, 'title')
-    total_invested_for_month = invested_for_month_by(invest, base_date, 'title')
-    total_applications_for_month = applications_for_month(invest, base_date)
-    total_discounts_for_month = discounts_for_month(invest, base_date)
-
-    return total_invested_for_month \
-        .sub(total_invested_previous_month, fill_value=0) \
-        .sub(total_applications_for_month, fill_value=0) \
-        .add(total_discounts_for_month, fill_value=0)
-
-
-def return_for_month_percentage(invest_return_for_month, invested_previous_month):
-    return invest_return_for_month / invested_previous_month
-
-
-def return_for_month_percentage_heavy(invest, base_date):
-    """Computes percentage of return but starting from the raw data,
-    without depending on preprocessed data."""
-    return return_for_month_percentage(return_for_month(invest, base_date),
-                                       invested_previous_month_by(invest, base_date, 'title'))
-
-
-def return_with_inflation(return_perc, base_date):
-    ipca = central_bank_metric(BC_IPCA_BY_MONTH_ID, base_date)
-    if ipca is not None:
-        return return_perc - ipca
-    else:
-        return pd.DataFrame(np.nan, index=return_perc.index, columns=['amount'])
+from investments import filters as ft
+from investments import totals as tt
 
 
 def summary_investments_current_month(invest, base_date):
-    invest_return_for_month = return_for_month(invest, base_date)
-    invested_previous_month = invested_previous_month_by(invest, base_date, 'title')
-    invest_return_for_month_perc = return_for_month_percentage(invest_return_for_month, invested_previous_month)
+    invest_return_for_month = tt.return_for_month(invest, base_date)
+    invested_previous_month = tt.invested_previous_month_by('title', invest, base_date)
+    invest_return_for_month_perc = tt.return_for_month_percentage(invest_return_for_month, invested_previous_month)
 
-    summary = {'Total': invested_for_month_by(invest, base_date, 'title').amount,
+    summary = {'Total': tt.invested_for_month_by('title', invest, base_date).amount,
                'Total last month': invested_previous_month.amount,
                'Return for month': invest_return_for_month.amount,
                'Return for month (%)': invest_return_for_month_perc.amount,
-               'Return with inflation (%)': return_with_inflation(invest_return_for_month_perc, base_date).amount}
+               'Return with inflation (%)': tt.return_with_inflation(invest_return_for_month_perc, base_date).amount}
 
     summary_invest = pd.DataFrame(summary, columns=list(summary.keys()))
     return summary_invest[summary_invest['Total'] > 0]
@@ -99,19 +43,19 @@ def style_summary_investments(summary, return_for_month_goal, return_with_inflat
 def return_over_time(invest):
     return describe_over_time(invest,
                               lambda data, date:
-                                return_for_month(data, date).amount)
+                                tt.return_for_month(data, date).amount)
 
 
 def return_percentage_over_time(invest):
     return describe_over_time(invest,
                               lambda data, date:
-                                return_for_month_percentage_heavy(data, date).amount)
+                                tt.return_for_month_percentage_heavy(data, date).amount)
 
 
 def cumulative_return_over_time(invest):
     return describe_over_time(invest,
                               lambda data, date:
-                                return_for_month(data, date).amount).cumsum()
+                                tt.return_for_month(data, date).amount).cumsum()
 
 
 ASSETS_SUMMARY_COLS_FORMAT = {
@@ -125,13 +69,13 @@ ASSETS_SUMMARY_COLS_FORMAT = {
 def summary_assets(invest):
     total = describe_over_time(invest,
                                lambda data, date:
-                                   invested_for_month_by(invest, date, 'title').sum()).amount
+                                   tt.invested_for_month_by('title', invest, date).sum()).amount
     invest_return = describe_over_time(invest,
                                        lambda data, date:
-                                           return_for_month(data, date).sum()).amount
+                                           tt.return_for_month(data, date).sum()).amount
     applications = describe_over_time(invest,
                                       lambda data, date:
-                                          applications_for_month(data, date).sum()).amount
+                                          tt.applications_for_month(data, date).sum()).amount
 
     summary = {'Total': total,
                'Return': invest_return,
@@ -157,7 +101,7 @@ def style_summary_assets(summary):
 
 
 def plot_invest_type_distribution(invest, base_date):
-    invested_by_type = invested_for_month_by(invest, base_date, 'type')
+    invested_by_type = tt.invested_for_month_by('type', invest, base_date)
     type_distribution = (invested_by_type / invested_by_type.sum()).sort_values('amount')
     return type_distribution.plot.pie(y='amount', figsize=(10,10), autopct='%1.1f%%', fontsize=15,
                                       legend=False, title="Distribuição por categoria")
