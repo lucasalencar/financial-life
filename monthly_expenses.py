@@ -36,14 +36,30 @@ def style_summary_expenses(summary, balance_goal):
         .applymap(fmt.amount_color, subset=['Expenses', 'Incomes'])\
         .applymap(fmt.red_to_green_background(balance_goal), subset=['Balance (%)'])
 
+from plotly.offline import iplot
+import plotly.graph_objs as go
 
 def plot_expenses_summary(monthly_exp):
-    data = monthly_exp.copy()[['Expenses', 'Incomes', 'Balance']].reset_index().rename(columns={'index': 'date'})
-    data['Expenses'] = data['Expenses'] * -1
-    plt = data.plot(figsize=(20, 10), grid=True, fontsize=15, color=['r', 'g', 'b'], xticks=data.index)
-    plt.set_xticklabels(data.date)
-    plt.legend(fontsize=20)
-    return plt
+    return iplot([
+        go.Scatter(
+            x = monthly_exp.index,
+            y = monthly_exp['Expenses'] * -1,
+            name = 'Expenses',
+            line = dict(color='red')
+        ),
+        go.Scatter(
+            x = monthly_exp.index,
+            y = monthly_exp['Incomes'],
+            name = 'Incomes',
+            line = dict(color='green')
+        ),
+        go.Scatter(
+            x = monthly_exp.index,
+            y = monthly_exp['Balance'],
+            name = 'Balance',
+            line = dict(color='blue')
+        )
+    ])
 
 
 def expense_distribution(expenses, denominator):
