@@ -27,8 +27,8 @@ def most_recent_exported_files(filepath, file_pattern):
 
     exported_files = []
     for year, exported_at in selected_files.iteritems():
-        f = files[(files.year == year) & (files.exported_at == exported_at)].filename.values[0]
-        exported_files.append(f)
+        filename = files[(files.year == year) & (files.exported_at == exported_at)].filename.values[0]
+        exported_files.append(filename)
 
     return exported_files
 
