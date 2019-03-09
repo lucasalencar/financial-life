@@ -23,10 +23,14 @@ def parse_files(all_files):
 
 def most_recent_exported_files(filepath, file_pattern):
     files = parse_files(read.list_all_files_for(filepath, file_pattern))
-    selected_files = files.groupby('year').exported_at.max().reset_index()
-    selected_files = files[(files.year.isin(selected_files.year)) &
-                           (files.exported_at.isin(selected_files.exported_at))]
-    return list(selected_files.filename)
+    selected_files = files.groupby('year').exported_at.max()
+
+    exported_files = []
+    for year, exported_at in selected_files.iteritems():
+        f = files[(files.year == year) & (files.exported_at == exported_at)].filename.values[0]
+        exported_files.append(f)
+
+    return exported_files
 
 
 # Splitwise column names to convert
