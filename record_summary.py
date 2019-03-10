@@ -34,11 +34,3 @@ def describe_over_time(data, describe_fn):
         data_over_time[month] = describe_fn(data, month_to_date(month))
     return pd.DataFrame(data_over_time, columns=sorted(data_over_time.keys()))\
         .replace([np.inf, -np.inf], np.nan).fillna(0).transpose()
-
-
-def plot_over_time(data, title='', figsize=(20, 10)):
-    data = data.copy().reset_index().rename(columns={'index': 'date'})
-    plt = data.plot(title=title, figsize=figsize, grid=True, fontsize=15, xticks=data.index)
-    plt.set_xticklabels(data.date)
-    plt.legend(fontsize=15)
-    return plt
