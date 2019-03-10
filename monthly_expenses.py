@@ -36,31 +36,6 @@ def style_summary_expenses(summary, balance_goal):
         .applymap(fmt.amount_color, subset=['Expenses', 'Incomes'])\
         .applymap(fmt.red_to_green_background(balance_goal), subset=['Balance (%)'])
 
-from plotly.offline import iplot
-import plotly.graph_objs as go
-
-def plot_expenses_summary(monthly_exp):
-    return iplot([
-        go.Scatter(
-            x = monthly_exp.index,
-            y = monthly_exp['Expenses'] * -1,
-            name = 'Expenses',
-            line = dict(color='red')
-        ),
-        go.Scatter(
-            x = monthly_exp.index,
-            y = monthly_exp['Incomes'],
-            name = 'Incomes',
-            line = dict(color='green')
-        ),
-        go.Scatter(
-            x = monthly_exp.index,
-            y = monthly_exp['Balance'],
-            name = 'Balance',
-            line = dict(color='blue')
-        )
-    ])
-
 
 def expense_distribution(expenses, denominator):
     denominator_sum = denominator.amount.sum()
