@@ -16,17 +16,17 @@ def final_return(incomes):
     applications = tt.total_applications_by('title', incomes[incomes.amount > 0])
     liquidation_titles = tt.total_income_by('title', incomes)
     discounts = tt.total_discounts_by('title', incomes)
-    net_liquidations = liquidation_titles\
+    net_return = liquidation_titles\
         .sub(applications, fill_value=0)\
         .add(discounts, fill_value=0)
-    net_return_percentage = net_liquidations.div(applications)
+    net_return_percentage = net_return.div(applications)
 
     data = {
         'Applications': applications,
-        'liquidation_titles': liquidation_titles,
+        'Liquidations': liquidation_titles,
         'Discounts': discounts,
-        'Net liquidations': net_liquidations,
-        'Net Return (%)': net_return_percentage,
+        'Net return': net_return,
+        'Net return (%)': net_return_percentage,
     }
 
     final_returns = pd.concat(data.values(), axis=1, sort=False)
