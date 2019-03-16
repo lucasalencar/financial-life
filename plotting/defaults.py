@@ -14,3 +14,10 @@ def layout(margin_bottom=25, margin_top=35, height=300, **configs):
         height=height,
         **configs
     )
+
+def figure(data, **configs):
+    """Defatul figure that get default layout"""
+    return go.Figure(
+        data=data,
+        layout=layout(**configs)
+    )

@@ -15,9 +15,4 @@ def plot(data, **configs):
             name=column.name
         )
     )
-
-    fig = go.Figure(
-        data=list(to_plot),
-        layout=defaults.layout(**configs)
-    )
-    return iplot(fig)
+    return iplot(defaults.figure(list(to_plot), **configs))
