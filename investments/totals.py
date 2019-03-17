@@ -39,6 +39,7 @@ def applications_for_month(incomes, base_date):
     return total_amount_by('title', applications)
 
 
+## TODO Call this absolute_return_for_month
 def return_for_month(invest, base_date):
     """Total return on current month given base_date"""
     past_month = records_for_previous_month(invest, base_date)
@@ -55,6 +56,8 @@ def return_for_month(invest, base_date):
         .add(discounts_month, fill_value=0)
 
 
+## TODO Create monthly_return without subtracting invested_previous_month from return_for_month
+## and divide it by invested_previous_month
 def return_for_month_percentage(invest_return_for_month,
                                 invested_previous_month):
     """Total return on percentage for current month given base_date"""
