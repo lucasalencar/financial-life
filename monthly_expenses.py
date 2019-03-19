@@ -2,8 +2,7 @@ import pandas as pd
 import numpy as np
 import seaborn
 import formatting as fmt
-from record_summary import *
-from date_helpers import records_for_month
+import record_summary as rs
 
 def balance(expense, income):
     """Computes balance based on expenses and incomes.
@@ -39,12 +38,12 @@ def style_summary_expenses(summary, balance_goal):
 
 def expense_distribution(expenses, denominator):
     denominator_sum = denominator.amount.sum()
-    expenses_by_category = total_amount_by('category', expenses).sort_values('amount')
+    expenses_by_category = rs.total_amount_by('category', expenses).sort_values('amount')
     return expenses_by_category / denominator_sum
 
 
 def describe_expenses(expenses, incomes):
-    expenses_by_category = total_amount_by('category', expenses)
+    expenses_by_category = rs.total_amount_by('category', expenses)
     dist_by_spent = expense_distribution(expenses, expenses)
     dist_by_income = expense_distribution(expenses,
                                           incomes[incomes.category == 'renda']) * -1
@@ -68,10 +67,10 @@ def style_expenses_distribution(dist):
 
 def _expenses_over_time_(expenses, incomes, post_describe_fn):
     """Computes expenses distribution over time, for all months available in expenses"""
-    return describe_over_time(expenses,
+    return rs.describe_over_time(expenses,
                               lambda exps, date: post_describe_fn(
-                                  describe_expenses(records_for_month(expenses, date),
-                                                    records_for_month(incomes, date))))
+                                  describe_expenses(rs.records_for_month(expenses, date),
+                                                    rs.records_for_month(incomes, date))))
 
 
 def expenses_over_time(expenses, incomes, column):

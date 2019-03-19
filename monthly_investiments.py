@@ -3,15 +3,14 @@
 import pandas as pd
 import seaborn as sns
 import formatting as fmt
-from record_summary import describe_over_time
-from date_helpers import records_for_month, records_for_previous_month
+import record_summary as rs
 
 from investments import totals as tt
 
 
 def summary_investments_current_month(invest, base_date):
-    past_month = records_for_previous_month(invest, base_date)
-    current_month = records_for_month(invest, base_date)
+    past_month = rs.records_for_previous_month(invest, base_date)
+    current_month = rs.records_for_month(invest, base_date)
 
     invest_return_for_month = tt.absolute_return_for_month(invest, base_date)
     invested_previous_month = tt.total_invested_by('title', past_month)
@@ -58,15 +57,15 @@ ASSETS_SUMMARY_COLS_FORMAT = {
 
 
 def summary_assets(invest):
-    total = describe_over_time(invest,
+    total = rs.describe_over_time(invest,
                                lambda data, date:
                                tt.invested_for_month_by('title', invest, date)
                                .sum()).amount
-    invest_return = describe_over_time(invest,
+    invest_return = rs.describe_over_time(invest,
                                        lambda data, date:
                                        tt.absolute_return_for_month(data, date)
                                        .sum()).amount
-    applications = describe_over_time(invest,
+    applications = rs.describe_over_time(invest,
                                       lambda data, date:
                                       tt.applications_for_month(data, date)
                                       .sum()).amount
