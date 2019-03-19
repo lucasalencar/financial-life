@@ -39,6 +39,8 @@ def applications_for_month(incomes, base_date):
     return total_amount_by('title', applications)
 
 
+## TODO Create monthly_return without subtracting invested_previous_month from return_for_month
+## and divide it by invested_previous_month
 def absolute_return_for_month(invest, base_date):
     """Total return on current month given base_date"""
     past_month = records_for_previous_month(invest, base_date)
@@ -55,14 +57,6 @@ def absolute_return_for_month(invest, base_date):
         .add(discounts_month, fill_value=0)
 
 
-## TODO Create monthly_return without subtracting invested_previous_month from return_for_month
-## and divide it by invested_previous_month
-def absolute_return_for_month_percentage(invest_return_for_month,
-                                invested_previous_month):
-    """Total return on percentage for current month given base_date"""
-    return invest_return_for_month / invested_previous_month
-
-
 def absolute_return_for_month_percentage_heavy(invest, base_date):
     """Total return on percentage for current month given base_date.
     This operation is heavier than return_for_month_percentage
@@ -71,7 +65,7 @@ def absolute_return_for_month_percentage_heavy(invest, base_date):
     month_return = absolute_return_for_month(invest, base_date)
     past_month = records_for_previous_month(invest, base_date)
     invested_last_month = total_invested_by('title', past_month)
-    return absolute_return_for_month_percentage(month_return, invested_last_month)
+    return month_return / invested_last_month
 
 
 def return_with_inflation(return_perc, base_date):

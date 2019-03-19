@@ -16,8 +16,7 @@ def summary_investments_current_month(invest, base_date):
     invest_return_for_month = tt.absolute_return_for_month(invest, base_date)
     invested_previous_month = tt.total_invested_by('title', past_month)
 
-    invest_return_for_month_perc = tt.absolute_return_for_month_percentage(
-        invest_return_for_month, invested_previous_month)
+    invest_return_for_month_perc = invest_return_for_month / invested_previous_month
 
     summary = {'Total': tt.total_invested_by('title', current_month).amount,
                'Total last month': invested_previous_month.amount,
