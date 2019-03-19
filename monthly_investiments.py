@@ -13,10 +13,10 @@ def summary_investments_current_month(invest, base_date):
     past_month = records_for_previous_month(invest, base_date)
     current_month = records_for_month(invest, base_date)
 
-    invest_return_for_month = tt.return_for_month(invest, base_date)
+    invest_return_for_month = tt.absolute_return_for_month(invest, base_date)
     invested_previous_month = tt.total_invested_by('title', past_month)
 
-    invest_return_for_month_perc = tt.return_for_month_percentage(
+    invest_return_for_month_perc = tt.absolute_return_for_month_percentage(
         invest_return_for_month, invested_previous_month)
 
     summary = {'Total': tt.total_invested_by('title', current_month).amount,
@@ -52,20 +52,20 @@ def style_summary_investments(summary, return_for_month_goal,
 def return_over_time(invest):
     return describe_over_time(invest,
                               lambda data, date:
-                              tt.return_for_month(data, date).amount)
+                              tt.absolute_return_for_month(data, date).amount)
 
 
 def return_percentage_over_time(invest):
     return describe_over_time(invest,
                               lambda data, date:
-                              tt.return_for_month_percentage_heavy(
+                              tt.absolute_return_for_month_percentage_heavy(
                                   data, date).amount)
 
 
 def cumulative_return_over_time(invest):
     return describe_over_time(invest,
                               lambda data, date:
-                              tt.return_for_month(data, date).amount).cumsum()
+                              tt.absolute_return_for_month(data, date).amount).cumsum()
 
 
 ASSETS_SUMMARY_COLS_FORMAT = {
@@ -84,7 +84,7 @@ def summary_assets(invest):
                                .sum()).amount
     invest_return = describe_over_time(invest,
                                        lambda data, date:
-                                       tt.return_for_month(data, date)
+                                       tt.absolute_return_for_month(data, date)
                                        .sum()).amount
     applications = describe_over_time(invest,
                                       lambda data, date:
