@@ -57,7 +57,7 @@ def absolute_return_for_month(invest, base_date):
         .add(discounts_month, fill_value=0)
 
 
-def absolute_return_for_month_percentage_heavy(invest, base_date):
+def absolute_return_for_month_percentage(invest, base_date):
     """Total return on percentage for current month given base_date.
     This operation is heavier than return_for_month_percentage
     because it computes all data dependencies instead of receiving

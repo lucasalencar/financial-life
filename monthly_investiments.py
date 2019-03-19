@@ -57,8 +57,9 @@ def return_over_time(invest):
 def return_percentage_over_time(invest):
     return describe_over_time(invest,
                               lambda data, date:
-                              tt.absolute_return_for_month_percentage_heavy(
-                                  data, date).amount)
+                              tt.absolute_return_for_month_percentage(
+                                  data, date
+                              ).amount)
 
 
 def cumulative_return_over_time(invest):
