@@ -48,26 +48,6 @@ def style_summary_investments(summary, return_for_month_goal,
                   subset=['Return with inflation (%)'])
 
 
-def return_over_time(invest):
-    return describe_over_time(invest,
-                              lambda data, date:
-                              tt.absolute_return_for_month(data, date).amount)
-
-
-def return_percentage_over_time(invest):
-    return describe_over_time(invest,
-                              lambda data, date:
-                              tt.absolute_return_for_month_percentage(
-                                  data, date
-                              ).amount)
-
-
-def cumulative_return_over_time(invest):
-    return describe_over_time(invest,
-                              lambda data, date:
-                              tt.absolute_return_for_month(data, date).amount).cumsum()
-
-
 ASSETS_SUMMARY_COLS_FORMAT = {
     'Total': fmt.BR_CURRENCY_FORMAT,
     'Return': fmt.BR_CURRENCY_FORMAT,
