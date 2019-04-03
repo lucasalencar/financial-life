@@ -3,6 +3,7 @@ import seaborn as sns
 import record_summary as rs
 import formatting as fmt
 
+from datetime import date
 from investments import totals as tt
 
 def summary(invest):
@@ -49,6 +50,43 @@ def style_summary(summary):
     return summary.style\
         .format(ASSETS_SUMMARY_COLS_FORMAT)\
         .background_gradient(cmap=cm, subset=background_subset)
+
+def pms(expenses):
+    return 6 * expenses.mean() * -1
+
+
+def pmr(expenses):
+    return 12 * expenses.mean() * -1
+
+
+def pi(expenses, age):
+    return 0.1 * pmr(expenses) * age
+
+
+def annualized_return(invest, start_date, end_date):
+    return summary(invest).loc[start_date:end_date, 'Return / Total'].mean() * 12
+
+
+def pnif(expenses, annualized_return):
+    return pmr(expenses) / annualized_return
+
+
+def total(invest, base_date):
+    return tt.invested_for_month_by('title', invest, base_date).sum()
+
+
+def age(birth_year):
+    return date.today().year - birth_year
+
+
+def goals(expenses, invest, base_date, birth_year):
+    return pd.DataFrame([pms(expenses),
+                         pmr(expenses),
+                         pi(expenses, age(birth_year)),
+                         pnif(expenses, annualized_return(invest,
+                                                          '2018-04',
+                                                          base_date.strftime('%Y-%m'))),
+                         total(invest, base_date)], index=['PMS', 'PMR', 'PI', 'PNIF', 'Total'])
 
 
 def style_goals(assets_goals, assets_thresh):
