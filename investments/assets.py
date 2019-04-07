@@ -63,6 +63,8 @@ def pi(expenses, age):
     return 0.1 * pmr(expenses) * age
 
 
+## TODO Add annualized return according to this article
+## https://www.fool.com/knowledge-center/how-to-calculate-a-monthly-return-on-investment.aspx
 def annualized_return(invest, start_date, end_date):
     return summary(invest).loc[start_date:end_date, 'Return / Total'].mean() * 12
 
