@@ -6,7 +6,7 @@ import formatting as fmt
 from datetime import date
 from investments import totals as tt
 
-def summary(invest):
+def summary(invest, start_date, end_date):
     total = rs.describe_over_time(invest,
                                   lambda data, date:
                                   tt.invested_for_month_by('title', invest, date)
@@ -27,7 +27,7 @@ def summary(invest):
                'Applications / Total': applications / total}
 
     assets_summary = pd.DataFrame(summary, columns=list(summary.keys()))
-    return assets_summary
+    return assets_summary.loc[start_date.strftime('%Y-%m'):end_date.strftime('%Y-%m')]
 
 
 ASSETS_SUMMARY_COLS_FORMAT = {
@@ -66,9 +66,7 @@ def pi(expenses, age):
 ## TODO Add annualized return according to this article
 ## https://www.fool.com/knowledge-center/how-to-calculate-a-monthly-return-on-investment.aspx
 def annualized_return(invest, start_date, end_date):
-    start = start_date.strftime('%Y-%m')
-    end = end_date.strftime('%Y-%m')
-    return summary(invest).loc[start:end, 'Return / Total'].mean() * 12
+    return summary(invest, start_date, end_date)['Return / Total'].mean() * 12
 
 
 def pnif(expenses, annualized_return):
