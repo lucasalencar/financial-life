@@ -40,16 +40,9 @@ ASSETS_SUMMARY_COLS_FORMAT = {
 
 
 def style_summary(summary):
-    cm = sns.light_palette("green", as_cmap=True)
-    background_subset = pd.IndexSlice['2018-02':, ['Total',
-                                                   'Return',
-                                                   'Return / Total',
-                                                   'Applications',
-                                                   'Applications / Total']]
-
     return summary.style\
         .format(ASSETS_SUMMARY_COLS_FORMAT)\
-        .background_gradient(cmap=cm, subset=background_subset)
+        .background_gradient(cmap=sns.light_palette("green", as_cmap=True))
 
 def pms(expenses):
     return 6 * expenses.mean() * -1
