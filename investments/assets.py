@@ -101,7 +101,8 @@ def goals(expenses, invest, start_date, base_date, birth_year):
                          total(invest, base_date)], index=['PMS', 'PMR', 'PI', 'PNIF', 'Total'])
 
 
-def style_goals(assets_goals, assets_thresh):
+def style_goals(assets_goals):
+    threshold = assets_goals.loc['Total', 'amount']
     return assets_goals.style\
         .format({'amount': fmt.BR_CURRENCY_FORMAT})\
-        .applymap(fmt.green_background_threshold(assets_thresh))
+        .applymap(fmt.green_background_threshold(threshold))
