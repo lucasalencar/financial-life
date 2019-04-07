@@ -34,7 +34,10 @@ def month_by_month_summary(expenses, incomes):
 
 
 def avg_month_summary(expenses, incomes):
-    return summary(expenses_by_month(expenses).mean(), incomes_by_month(incomes).mean())
+    avg_monthly_exp = summary(expenses_by_month(expenses).mean(),
+                              incomes_by_month(incomes).mean())
+    avg_monthly_exp.index = ['Average monthly expenses']
+    return avg_monthly_exp
 
 
 MONTHLY_COST_COLS_FORMAT = {
