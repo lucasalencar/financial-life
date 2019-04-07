@@ -66,7 +66,9 @@ def pi(expenses, age):
 ## TODO Add annualized return according to this article
 ## https://www.fool.com/knowledge-center/how-to-calculate-a-monthly-return-on-investment.aspx
 def annualized_return(invest, start_date, end_date):
-    return summary(invest).loc[start_date:end_date, 'Return / Total'].mean() * 12
+    start = start_date.strftime('%Y-%m')
+    end = end_date.strftime('%Y-%m')
+    return summary(invest).loc[start:end, 'Return / Total'].mean() * 12
 
 
 def pnif(expenses, annualized_return):
@@ -81,13 +83,21 @@ def age(birth_year):
     return date.today().year - birth_year
 
 
-def goals(expenses, invest, base_date, birth_year):
+def goals(expenses, invest, start_date, base_date, birth_year):
+    """Returns table with summary for assets goal, considering (PMS, PMR, PI, PNIF).
+
+    expenses: list of expenses (will consider all records, if need for a month,
+    pass expenses for the month)
+    invest: list of investments
+    start_date: when will the analysis start (this is used by annualized return)
+    base_date: date which these goals are being analysed. If passed previous month
+    will return a snapshot for this goals in the previous month
+    birth_year: important to compute age and pass to PI metric
+    """
     return pd.DataFrame([pms(expenses),
                          pmr(expenses),
                          pi(expenses, age(birth_year)),
-                         pnif(expenses, annualized_return(invest,
-                                                          '2018-04',
-                                                          base_date.strftime('%Y-%m'))),
+                         pnif(expenses, annualized_return(invest, start_date, base_date)),
                          total(invest, base_date)], index=['PMS', 'PMR', 'PI', 'PNIF', 'Total'])
 
 
