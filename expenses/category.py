@@ -49,3 +49,17 @@ def over_time(expenses, incomes, column):
     else:
         post_describe_fn = lambda x: x[column]
     return describe_over_time(expenses, incomes, post_describe_fn)
+
+
+def food_expenses(expenses, base_date):
+    data = rs.total_amount_by('category', rs.records_for_month(expenses, base_date))
+    if 'mercado' in data.index and 'restaurante' in data.index:
+        return pd.Series(data.loc['mercado'].amount + data.loc['restaurante'].amount) * -1
+    else:
+        return pd.Series(0)
+
+
+def add_food_expenses(expenses, over_time_data):
+    clone_data = over_time_data.copy()
+    clone_data['alimentação'] = rs.describe_over_time(expenses, food_expenses)
+    return clone_data
