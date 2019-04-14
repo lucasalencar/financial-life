@@ -33,6 +33,12 @@ def style_distribution(dist):
     return dist.style.format(EXPENSES_DISTRIBUTION_COLS_FORMAT)
 
 
+def display_expenses(expenses, category):
+    from IPython.display import display
+    print("Expenses in category", category)
+    display(expenses[expenses.category == category].sort_values('amount'))
+
+
 def describe_over_time(expenses, incomes, post_describe_fn):
     """Computes expenses distribution over time, for all months available in expenses"""
     return rs.describe_over_time(expenses,
