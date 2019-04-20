@@ -70,8 +70,8 @@ def absolute_return_for_month_percentage(invest, base_date):
 def return_with_inflation(return_perc, base_date):
     """Total return on percentage with inflation discounted
     for current month given base_date"""
-    from central_bank_data import central_bank_metric, BC_IPCA_BY_MONTH_ID
-    ipca = central_bank_metric(BC_IPCA_BY_MONTH_ID, base_date)
+    from load import central_bank
+    ipca = central_bank.ipca_for_month(base_date)
     if ipca is not None:
         return return_perc - ipca
     return pd.DataFrame(np.nan, index=return_perc.index, columns=['amount'])
