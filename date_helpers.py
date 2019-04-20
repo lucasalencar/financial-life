@@ -1,3 +1,4 @@
+import calendar
 import pandas as pd
 
 
@@ -39,3 +40,14 @@ def previous_month(date):
     while one_month_earlier.month == date.month or one_month_earlier.day > date.day:
         one_month_earlier -= one_day
     return one_month_earlier
+
+
+def weekdays_in_month(base_date):
+    """Return number of weekdays in passed month"""
+    month_calendar = calendar.monthcalendar(base_date.year, base_date.month)
+    weekdays = 0
+    for week in month_calendar:
+        for day in filter(lambda x: x > 0, week):
+            if calendar.weekday(base_date.year, base_date.month, day) < 5:
+                weekdays += 1
+    return weekdays
