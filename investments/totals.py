@@ -65,7 +65,7 @@ def absolute_return_for_month_percentage(invest, base_date):
     return month_return / invested_last_month
 
 
-def monthly_return_percentage(invest, base_date):
+def monthly_return_by_title(invest, base_date):
     """Monthly return percentage given investments.
     Even though it has a different calculation, it returns the same results
     as absolute_return_for_month_percentage"""
@@ -81,6 +81,28 @@ def monthly_return_percentage(invest, base_date):
         .sub(applications_month, fill_value=0)\
         .add(discounts_month, fill_value=0)\
         .div(invested_previous_month, fill_value=0) - 1
+
+
+def monthly_return_percentage(starting_balance, ending_balance, net_deposits):
+    """https://www.fool.com/knowledge-center/how-to-calculate-a-monthly-return-on-investment.aspx"""
+    return 1 - ((starting_balance - net_deposits) / ending_balance)
+
+
+def total_monthly_return(invest, base_date):
+    past_month = rs.records_for_previous_month(invest, base_date)
+    current_month = rs.records_for_month(invest, base_date)
+
+    invested_past_month = ft.invested(past_month).amount.sum()
+    invested_current_month = ft.invested(current_month).amount.sum()
+    applications_current_month = ft.applications(current_month).amount.sum()
+    discounts_current_month = ft.discounts(current_month).amount.sum()
+
+    if invested_current_month == 0:
+        return 0.0
+
+    return monthly_return_percentage(invested_past_month,
+                                     invested_current_month,
+                                     applications_current_month + discounts_current_month)
 
 
 def return_with_inflation(return_perc, base_date):

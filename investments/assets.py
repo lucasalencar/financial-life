@@ -7,10 +7,10 @@ from datetime import date
 from investments import totals as tt
 
 def summary(invest, start_date, end_date):
-    total = rs.describe_over_time(invest,
-                                  lambda data, date:
-                                  tt.invested_for_month_by('title', invest, date)
-                                  .sum()).amount
+    invested = rs.describe_over_time(invest,
+                                     lambda data, date:
+                                     tt.invested_for_month_by('title', invest, date)
+                                     .sum()).amount
     invest_return = rs.describe_over_time(invest,
                                           lambda data, date:
                                           tt.absolute_return_for_month(data, date)
@@ -19,12 +19,17 @@ def summary(invest, start_date, end_date):
                                          lambda data, date:
                                          tt.applications_for_month(data, date)
                                          .sum()).amount
+    monthly_return = rs.describe_over_time(invest,
+                                           lambda data, date:
+                                           pd.Series(tt.total_monthly_return(data, date),
+                                                     index=['amount'])).amount
 
-    summary = {'Total': total,
+    summary = {'Total': invested,
                'Return': invest_return,
-               'Return / Total': invest_return / total,
+               'Return / Total': invest_return / invested,
                'Applications': applications,
-               'Applications / Total': applications / total}
+               'Applications / Total': applications / invested,
+               'Monthly Return': monthly_return}
 
     assets_summary = pd.DataFrame(summary, columns=list(summary.keys()))
     return assets_summary.loc[start_date.strftime('%Y-%m'):end_date.strftime('%Y-%m')]
@@ -35,7 +40,8 @@ ASSETS_SUMMARY_COLS_FORMAT = {
     'Return': fmt.BR_CURRENCY_FORMAT,
     'Return / Total': fmt.PERC_FORMAT,
     'Applications': fmt.BR_CURRENCY_FORMAT,
-    'Applications / Total': fmt.PERC_FORMAT
+    'Applications / Total': fmt.PERC_FORMAT,
+    'Monthly Return': fmt.PERC_FORMAT
 }
 
 
