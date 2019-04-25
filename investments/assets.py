@@ -101,3 +101,8 @@ def style_goals(assets_goals):
     return assets_goals.style\
         .format({'amount': fmt.BR_CURRENCY_FORMAT})\
         .applymap(fmt.green_background_threshold(threshold))
+
+
+def annualized_return(invest, base_date):
+    """https://www.fool.com/knowledge-center/how-to-calculate-a-monthly-return-on-investment.aspx"""
+    return ((1 + tt.total_monthly_return(invest, base_date)) ** 12) - 1
