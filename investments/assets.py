@@ -62,14 +62,12 @@ def pi(expenses, age):
     return 0.1 * pmr(expenses) * age
 
 
-## TODO Add annualized return according to this article
-## https://www.fool.com/knowledge-center/how-to-calculate-a-monthly-return-on-investment.aspx
-def annualized_return(invest, start_date, end_date):
+def projected_return_for_year(invest, start_date, end_date):
     return summary(invest, start_date, end_date)['Return / Total'].mean() * 12
 
 
-def pnif(expenses, annualized_return):
-    return pmr(expenses) / annualized_return
+def pnif(expenses, projected_return_for_year):
+    return pmr(expenses) / projected_return_for_year
 
 
 def total(invest, base_date):
@@ -94,7 +92,7 @@ def goals(expenses, invest, start_date, base_date, birth_year):
     return pd.DataFrame([pms(expenses),
                          pmr(expenses),
                          pi(expenses, age(birth_year)),
-                         pnif(expenses, annualized_return(invest, start_date, base_date)),
+                         pnif(expenses, projected_return_for_year(invest, start_date, base_date)),
                          total(invest, base_date)], index=['PMS', 'PMR', 'PI', 'PNIF', 'Total'])
 
 
