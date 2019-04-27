@@ -5,6 +5,18 @@ import formatting as fmt
 
 from datetime import date
 from investments import totals as tt
+from investments import filters as ft
+
+def roi(incomes, base_date):
+    """https://www.investopedia.com/terms/r/returnoninvestment.asp"""
+    invested = tt.invested_for_month_by('title', incomes, base_date).amount.sum()
+    previous_incomes = incomes[incomes.date < pd.Timestamp(base_date.replace(day=1))]
+    applications = ft.applications(previous_incomes).amount.sum()
+
+    if applications == 0:
+        return 0.0
+
+    return (invested - applications) / applications
 
 def summary(invest, start_date, end_date):
     invested = rs.describe_over_time(invest,
@@ -23,13 +35,17 @@ def summary(invest, start_date, end_date):
                                            lambda data, date:
                                            pd.Series(tt.total_monthly_return(data, date),
                                                      index=['amount'])).amount
+    invest_roi = rs.describe_over_time(invest,
+                                       lambda data, date:
+                                       pd.Series(roi(data, date), index=['amount'])).amount
 
     summary = {'Total': invested,
                'Return': invest_return,
                'Return / Total': invest_return / invested,
                'Applications': applications,
                'Applications / Total': applications / invested,
-               'Monthly Return': monthly_return}
+               'Monthly Return': monthly_return,
+               'ROI': invest_roi}
 
     assets_summary = pd.DataFrame(summary, columns=list(summary.keys()))
     return assets_summary.loc[start_date.strftime('%Y-%m'):end_date.strftime('%Y-%m')]
@@ -41,7 +57,8 @@ ASSETS_SUMMARY_COLS_FORMAT = {
     'Return / Total': fmt.PERC_FORMAT,
     'Applications': fmt.BR_CURRENCY_FORMAT,
     'Applications / Total': fmt.PERC_FORMAT,
-    'Monthly Return': fmt.PERC_FORMAT
+    'Monthly Return': fmt.PERC_FORMAT,
+    'ROI': fmt.PERC_FORMAT,
 }
 
 
