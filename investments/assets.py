@@ -43,7 +43,6 @@ def summary(invest, start_date, end_date):
                'Return': invest_return,
                'Return / Total': invest_return / invested,
                'Applications': applications,
-               'Applications / Total': applications / invested,
                'Monthly Return': monthly_return,
                'ROI': invest_roi}
 
@@ -56,7 +55,6 @@ ASSETS_SUMMARY_COLS_FORMAT = {
     'Return': fmt.BR_CURRENCY_FORMAT,
     'Return / Total': fmt.PERC_FORMAT,
     'Applications': fmt.BR_CURRENCY_FORMAT,
-    'Applications / Total': fmt.PERC_FORMAT,
     'Monthly Return': fmt.PERC_FORMAT,
     'ROI': fmt.PERC_FORMAT,
 }
