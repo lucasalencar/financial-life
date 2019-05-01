@@ -10,22 +10,27 @@ def distribution_by_category(expenses, denominator):
     return expenses_by_category / denominator_sum
 
 
-def distribution(expenses, incomes):
+def distribution(expenses, incomes, categories={}):
     expenses_by_category = rs.total_amount_by('category', expenses)
     dist_by_spent = distribution_by_category(expenses, expenses)
     dist_by_income = distribution_by_category(expenses,
                                               incomes[incomes.category == 'renda']) * -1
 
-    return pd.DataFrame({'amount #': expenses_by_category.amount,
-                         '% by expenses': dist_by_spent.amount,
-                         '% by income': dist_by_income.amount},
-                        columns=['amount #', '% by expenses', '% by income']).sort_values('amount #')
+    data = {
+        'amount #': expenses_by_category.amount,
+        '% by expenses': dist_by_spent.amount,
+        '% by income': dist_by_income.amount,
+        '% by income goal': categories,
+    }
+
+    return pd.DataFrame(data, columns=list(data.keys())).sort_values('amount #')
 
 
 EXPENSES_DISTRIBUTION_COLS_FORMAT = {
     'amount #': fmt.BR_CURRENCY_FORMAT,
     '% by expenses': fmt.PERC_FORMAT,
-    '% by income': fmt.PERC_FORMAT
+    '% by income': fmt.PERC_FORMAT,
+    '% by income goal': fmt.PERC_FORMAT,
 }
 
 
