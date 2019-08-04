@@ -14,6 +14,7 @@ mv $SOURCE_FOLDER/nubank*.csv "$DEST_FOLDER"
 ## Spliwise csv exports from site
 mv $SOURCE_FOLDER/20*mozi-e-eu*.csv "$DEST_FOLDER"
 mv $SOURCE_FOLDER/kvjl*.csv "$DEST_FOLDER"
+mv $SOURCE_FOLDER/jacas-keter*.csv "$DEST_FOLDER"
 
 ## Symbolic link for everything that is on $DEST_FOLDER to data
 ln -sf "$DEST_FOLDER"/*.csv $DATA_FOLDER

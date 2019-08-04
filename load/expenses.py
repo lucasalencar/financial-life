@@ -28,8 +28,7 @@ def load(category_conversion_table=None, **configs):
                     category_conversion_table=configs['nubank_category_table'],
                     **configs),
 
-        splitwise.load(file_pattern=configs['splitwise_file_pattern'],
-                       category_conversion_table=configs['splitwise_category_table'],
+        splitwise.load(category_conversion_table=configs['splitwise_category_table'],
                        **configs),
 
         manual.load(file_pattern=configs['manual_file_pattern'],
