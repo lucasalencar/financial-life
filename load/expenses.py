@@ -1,4 +1,5 @@
 from load import read
+from load import data_processing
 from load import nubank
 from load import splitwise
 from load import incomes
@@ -6,11 +7,10 @@ from load import manual
 import pandas as pd
 
 
-def expenses_preprocess(expenses, category_conversion_hash):
+def preprocess(expenses, category_conversion_table):
     # Replace categories to the official ones and convert to lower case
-    expenses['category'] = expenses['category']\
-        .replace(category_conversion_hash)\
-        .apply(lambda x: x.lower())
+    expenses['category'] = data_processing\
+        .convert_categories(expenses, category_conversion_table)
     # Parse date
     expenses['date'] = pd.to_datetime(expenses['date'], format="%Y-%m-%d")
     # Convert amount to float
@@ -22,14 +22,17 @@ def expenses_preprocess(expenses, category_conversion_hash):
     return expenses[['date', 'title', 'category', 'amount']]
 
 
-def preprocess(expenses_input_files, category_conversion_table=None, **configs):
-    return expenses_preprocess(pd.concat(expenses_input_files, sort=False), category_conversion_table)
-
-
-def load(**configs):
+def load(category_conversion_table=None, **configs):
     content = [
-        nubank.load(file_pattern=configs['nubank_file_pattern'], **configs),
-        splitwise.load(file_pattern=configs['splitwise_file_pattern'], **configs),
-        manual.load(file_pattern=configs['manual_file_pattern'], **configs)
+        nubank.load(file_pattern=configs['nubank_file_pattern'],
+                    category_conversion_table=configs['nubank_category_table'],
+                    **configs),
+
+        splitwise.load(file_pattern=configs['splitwise_file_pattern'],
+                       category_conversion_table=configs['splitwise_category_table'],
+                       **configs),
+
+        manual.load(file_pattern=configs['manual_file_pattern'],
+                    **configs)
     ]
-    return preprocess(content, **configs)
+    return preprocess(pd.concat(content, sort=False), category_conversion_table)
