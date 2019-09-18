@@ -2,8 +2,10 @@ import pandas as pd
 import seaborn as sns
 import record_summary as rs
 import formatting as fmt
+import plotly.graph_objs as go
 
 from datetime import date
+from plotly.offline import iplot
 from investments import totals as tt
 from investments import filters as ft
 
@@ -121,3 +123,20 @@ def style_goals(assets_goals):
 def annualized_return(invest, base_date):
     """https://www.fool.com/knowledge-center/how-to-calculate-a-monthly-return-on-investment.aspx"""
     return ((1 + tt.total_monthly_return(invest, base_date)) ** 12) - 1
+
+
+def investment_goals(incomes, invest_goals):
+    total_invested = tt.total_invested_by('goal', incomes)
+    return total_invested\
+        .join(pd.DataFrame.from_dict(invest_goals, orient='index', columns=['goals']))
+
+
+def investment_goals_plot(invest_goals):
+    bar_x = list(invest_goals.index)
+
+    fig = go.Figure(data=[
+        go.Bar(name='Goal', x=bar_x, y=invest_goals.goals.values),
+        go.Bar(name='Invested', x=bar_x, y=invest_goals.amount.values)
+    ], layout=go.Layout(yaxis={'type':'log'}))
+
+    iplot(fig)
