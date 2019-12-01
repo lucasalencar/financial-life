@@ -8,7 +8,6 @@ from load import data_processing
 def fix_empty_category(category):
     if isinstance(category, str):
         return category
-    print('Warning: nubank empty category changed to Outros')
     return 'Outros'
 
 
@@ -16,6 +15,8 @@ def preprocess(expenses, category_conversion_table):
     # Remove cagegory Pagamento
     expenses = expenses.loc[expenses['category'] != 'Pagamento']
     expenses = expenses.loc[expenses['title'] != 'Pagamento recebido']
+
+    print('Warning: replacing nubank empty category to Outros')
     expenses['category'] = expenses['category'].apply(fix_empty_category)
     expenses['category'] = data_processing\
         .convert_categories(expenses, category_conversion_table)
