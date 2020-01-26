@@ -11,7 +11,7 @@ def preprocess(incomes):
     # Parse date to datetime format
     incomes['date'] = pd.to_datetime(incomes['date'], format="%Y-%m-%d")
     # Convert amount to float
-    if incomes.amount.dtype != float:
+    if incomes.amount.dtype == object:
         incomes['amount'] = incomes['amount'].apply(lambda x: float(x.replace(',', '')))
     return incomes
 
@@ -19,6 +19,6 @@ def preprocess(incomes):
 def load(file_pattern=None, incomes_file_pattern=None, data_path=None, **configs):
     pattern = file_pattern or incomes_file_pattern
     all_data = read.read_all_csv_found(data_path, pattern)
-    if all_data:
+    if not all_data.empty:
         return preprocess(all_data)
     return None
