@@ -20,6 +20,8 @@ def preprocess(expenses, category_conversion_table):
     expenses['category'] = expenses['category'].apply(fix_empty_category)
     expenses['category'] = data_processing\
         .convert_categories(expenses, category_conversion_table)
+    # Update amount to reflect expenses as negative value
+    expenses['amount'] = expenses['amount'] * -1
     return expenses[['date', 'title', 'category', 'amount']]
 
 

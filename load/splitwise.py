@@ -52,9 +52,6 @@ def preprocess(expenses, person_name, category_conversion_hash):
     expenses = expenses.loc[expenses['title'] != 'Saldo total']
     # Remove Saldo total expense
     expenses = expenses.loc[expenses['title'] != 'Quitar todos os saldos']
-    # Because default preprocess converts values to negative,
-    # return amount to original values
-    expenses['amount'] = expenses['amount'] * -1
 
     expenses['category'] = data_processing.convert_categories(expenses, category_conversion_hash)
     return expenses[['date', 'title', 'category', 'amount']]

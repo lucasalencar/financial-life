@@ -16,8 +16,6 @@ def preprocess(expenses, category_conversion_table):
     # Convert amount to float
     if expenses.amount.dtype != float:
         expenses['amount'] = expenses['amount'].apply(lambda x: float(x.replace(',', '')))
-    # Update amount to reflect expenses as negative value
-    expenses['amount'] = expenses['amount'] * -1
     # Select only necessary columns
     return expenses[['date', 'title', 'category', 'amount']]
 
