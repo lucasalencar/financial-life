@@ -2,7 +2,7 @@ from load import read
 from load import data_processing
 from load import nubank
 from load import splitwise
-from load import incomes
+from load import investments
 from load import manual
 import pandas as pd
 
