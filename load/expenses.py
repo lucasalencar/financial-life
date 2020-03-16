@@ -25,10 +25,10 @@ def preprocess(expenses, category_conversion_table):
 def load(category_conversion_table=None, **configs):
     content = [
         nubank.load(file_pattern=configs['nubank_file_pattern'],
-                    category_conversion_table=configs['nubank_category_table'],
+                    category_conversion_table=configs.get('nubank_category_table', {}),
                     **configs),
 
-        splitwise.load(category_conversion_table=configs['splitwise_category_table'],
+        splitwise.load(category_conversion_table=configs.get('splitwise_category_table', {}),
                        **configs),
 
         manual.load(file_pattern=configs['manual_file_pattern'],
