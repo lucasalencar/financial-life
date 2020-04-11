@@ -4,6 +4,7 @@ from plotly.offline import iplot
 
 import formatting as fmt
 import record_summary as rs
+from plotting import defaults
 
 
 def expenses_by_month(expenses):
@@ -58,25 +59,27 @@ def style_summary(summary, balance_goal):
         .applymap(fmt.red_to_green_background(balance_goal), subset=['Balance (%)'])
 
 
-def plot(monthly_exp):
+def plot(monthly_exp, height=400, **configs):
     """Plot expenses summary over time"""
-    return iplot([
-        go.Scatter(
-            x=monthly_exp.index,
-            y=monthly_exp['Expenses'] * -1,
-            name='Expenses',
-            line=dict(color='red')
-        ),
-        go.Scatter(
-            x=monthly_exp.index,
-            y=monthly_exp['Incomes'],
-            name='Incomes',
-            line=dict(color='green')
-        ),
-        go.Scatter(
-            x=monthly_exp.index,
-            y=monthly_exp['Balance'],
-            name='Balance',
-            line=dict(color='blue')
-        )
-    ])
+    return iplot(
+        defaults.figure([
+            go.Scatter(
+                x=monthly_exp.index,
+                y=monthly_exp['Expenses'] * -1,
+                name='Expenses',
+                line=dict(color='red')
+            ),
+            go.Scatter(
+                x=monthly_exp.index,
+                y=monthly_exp['Incomes'],
+                name='Incomes',
+                line=dict(color='green')
+            ),
+            go.Scatter(
+                x=monthly_exp.index,
+                y=monthly_exp['Balance'],
+                name='Balance',
+                line=dict(color='blue')
+            )
+        ], height=height, **configs)
+    )
