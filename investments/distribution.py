@@ -1,19 +1,17 @@
-import plotly.graph_objs as go
-from plotly.offline import iplot
+"""Investment distribution functions"""
 
 from investments import totals as tt
-from plotting import defaults
+from plotting import defaults, pie
 import record_summary as rs
+
 
 def describe(invest, column, base_date):
     """Returns relevant data about types"""
     current_month = rs.records_for_month(invest, base_date)
-    invested_by_type = tt.total_invested_by(column, current_month)
-    return (invested_by_type / invested_by_type.sum()).sort_values('amount')
+    return tt.total_invested_by(column, current_month).amount
 
 
-def plot(invest, column, base_date, **configs):
-    """Plots pie chart with types distribution"""
+def plot(invest, column, base_date, height=400, **configs):
+    """Pie chart by types distribution"""
     by_type = describe(invest, column, base_date)
-    data = [go.Pie(labels=by_type.index, values=by_type.amount)]
-    return iplot(defaults.figure(data, height=400, **configs))
+    return pie.plot(by_type, height=height, **configs)
