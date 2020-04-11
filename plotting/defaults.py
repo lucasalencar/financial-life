@@ -12,6 +12,7 @@ def layout(margin_bottom=25, margin_top=35, height=300, **configs):
     return go.Layout(
         margin=go.layout.Margin(b=margin_bottom, t=margin_top),
         height=height,
+        hovermode='x',
         **configs
     )
 
