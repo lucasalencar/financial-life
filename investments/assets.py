@@ -8,6 +8,7 @@ from datetime import date
 from plotly.offline import iplot
 from investments import totals as tt
 from investments import filters as ft
+from plotting import defaults
 
 def roi(incomes, base_date):
     """https://www.investopedia.com/terms/r/returnoninvestment.asp"""
@@ -137,6 +138,6 @@ def investment_goals_plot(invest_goals):
     fig = go.Figure(data=[
         go.Bar(name='Goal', x=bar_x, y=invest_goals.goals.values),
         go.Bar(name='Invested', x=bar_x, y=invest_goals.amount.values)
-    ], layout=go.Layout(yaxis={'type':'log'}))
+    ], layout=defaults.layout(yaxis={'type': 'log'}, height=400))
 
     iplot(fig)
