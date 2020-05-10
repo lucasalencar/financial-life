@@ -17,7 +17,12 @@ def list_all_files_for(filepath, file_pattern):
 
 def read_all_csv_for(filenames, **opts):
     """Read all csvs listed into a DataFrame"""
-    all_dfs = [pd.read_csv(filename, **opts) for filename in filenames]
+    all_dfs = []
+    for filename in filenames:
+        read_file = pd.read_csv(filename, **opts)
+        read_file['filename'] = filename
+        all_dfs.append(read_file)
+
     if all_dfs:
         return pd.concat(all_dfs, ignore_index=True, sort=False)
     return None
