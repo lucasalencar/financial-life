@@ -48,35 +48,42 @@ def earliest_by_month_exported(filepath):
 
 # Preprocess functions
 
+
 def date_from_filename(loaded, filepath):
+    """Add date that data was collected based on the filename"""
     pattern = re.compile(filepath + FILENAME_PATTERN)
     loaded['date'] = loaded.filename.map(lambda filename:
                                          pattern.match(filename).group(1))
     return loaded
 
-COLUMN_NAMES = {
-    'TIPO DE INVESTIMENTO': 'type',
-    'DESCRIÇÃO': 'description',
-    'VENCIMENTO': 'maturity date',
-    'TAXA NEGOCIADA': 'index',
-    'QUANTIDADE': 'quantity',
-    'VALOR APLICADO': 'application',
-    'VALOR BRUTO': 'gross amount',
-    'VALOR LÍQUIDO': 'net amount',
-}
+
+def rename_columns(loaded):
+    """Rename columns to more programmable ones."""
+    column_names = {
+        'TIPO DE INVESTIMENTO': 'type',
+        'DESCRIÇÃO': 'description',
+        'VENCIMENTO': 'maturity date',
+        'TAXA NEGOCIADA': 'index',
+        'QUANTIDADE': 'quantity',
+        'VALOR APLICADO': 'application',
+        'VALOR BRUTO': 'gross amount',
+        'VALOR LÍQUIDO': 'net amount',
+    }
+    return loaded.rename(index=str, columns=column_names)
 
 
 def preprocess(loaded, filepath):
+    """Preprocess easynvest exported files"""
     loaded = date_from_filename(loaded, filepath)
-    loaded = loaded.rename(index=str, columns=COLUMN_NAMES)
+    loaded = rename_columns(loaded)
     return loaded
 
 
 def load(data_path=None):
+    """Load and preprocess easynvest exported files"""
     files = earliest_by_month_exported(data_path)
     easynvest = read.read_all_csv_for(files,
                                       sep=';',
                                       encoding='latin',
                                       header=1)
     return preprocess(easynvest, data_path)
-
