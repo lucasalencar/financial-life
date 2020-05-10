@@ -1,0 +1,69 @@
+from datetime import timedelta
+
+import pandas as pd
+import record_summary as rs
+
+def move_date_end_previous_month(easynvest):
+    easynvest['date'] = pd.to_datetime(easynvest['date'], format="%Y-%m-%d")
+    easynvest['date'] = easynvest.date.map(lambda date:
+                                           date.replace(day=1) - timedelta(days=1))
+    return easynvest
+
+
+def add_amount(easynvest):
+    easynvest['amount'] = easynvest['gross amount'].map(lambda amount:
+                                                        amount
+                                                        .replace('R$', '')
+                                                        .replace('.', '')
+                                                        .replace(',', '.')).astype(float)
+    return easynvest
+
+
+def add_accounts(easynvest):
+    account_mapping = {
+        'CDB Banco Indusval': 'Magnetis',
+        'CDB Banco Maxima':   'Magnetis',
+        'LCA Banco Maxima':   'Magnetis',
+        'LCI Banco Maxima':   'Magnetis',
+    }
+
+    easynvest['account'] = easynvest.title.apply(lambda row:
+                                                 account_mapping[row])
+    return easynvest
+
+
+def add_goals(easynvest):
+    goals_mapping = {
+        'CDB Banco Indusval': 'Aposentadoria',
+        'CDB Banco Maxima':   'Aposentadoria',
+        'LCA Banco Maxima':   'Aposentadoria',
+        'LCI Banco Maxima':   'Aposentadoria',
+    }
+
+    easynvest['goal'] = easynvest.title.apply(lambda row: goals_mapping[row])
+    return easynvest
+
+
+def preprocess(easynvest):
+    # Select fixed term investments
+    fixed_term = easynvest[easynvest.type.isin(['LCA', 'LCI', 'CDB'])].copy()
+    fixed_term = move_date_end_previous_month(fixed_term)
+    # Fix description to first letter capitalized
+    fixed_term['description'] = fixed_term.description.str.title()
+    # Add title based on type and description
+    fixed_term['title'] = fixed_term.type + ' ' + fixed_term.description
+    fixed_term = add_amount(fixed_term)
+    # Sum grouping by date, title and type
+    fixed_term = rs.total_amount_by(['date', 'title', 'type'], fixed_term)\
+        .reset_index()
+    fixed_term['category'] = 'valor aplicado'
+    fixed_term = add_accounts(fixed_term)
+    fixed_term = add_goals(fixed_term)
+    # reorder columns to make easier to compare
+    return fixed_term[['date',
+                       'title',
+                       'category',
+                       'amount',
+                       'account',
+                       'type',
+                       'goal']]
