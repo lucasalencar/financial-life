@@ -3,6 +3,7 @@ All functions necessary to load and preprocess incomes
 """
 import pandas as pd
 from load import read
+from load import easynvest
 
 
 def preprocess(incomes):
@@ -18,7 +19,9 @@ def preprocess(incomes):
 
 def load(file_pattern=None, incomes_file_pattern=None, data_path=None, **configs):
     pattern = file_pattern or incomes_file_pattern
-    all_data = read.read_all_csv_found(data_path, pattern)
-    if not all_data.empty:
-        return preprocess(all_data)
-    return None
+    content = [
+        preprocess(read.read_all_csv_found(data_path, pattern)),
+        easynvest.preprocess_temp(easynvest.load(data_path))
+    ]
+
+    return pd.concat(content, sort=False)

@@ -1,6 +1,9 @@
 import pandas as pd
 import re
+
 from load import read
+from load import easynvest_fixed_term
+
 import record_summary as rs
 import date_helpers as dth
 
@@ -77,6 +80,10 @@ def preprocess(loaded, filepath):
     loaded = date_from_filename(loaded, filepath)
     loaded = rename_columns(loaded)
     return loaded
+
+
+def preprocess_temp(data):
+    return easynvest_fixed_term.preprocess(data)
 
 
 def load(data_path=None):
