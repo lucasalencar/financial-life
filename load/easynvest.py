@@ -1,8 +1,10 @@
+from datetime import timedelta
 import pandas as pd
 import re
 
 from load import read
 from load import easynvest_fixed_term
+from load import easynvest_variable
 
 import record_summary as rs
 import date_helpers as dth
@@ -60,6 +62,12 @@ def date_from_filename(loaded, filepath):
     return loaded
 
 
+def move_date_end_previous_month(easynvest):
+    easynvest['date'] = pd.to_datetime(easynvest['date'], format="%Y-%m-%d")
+    easynvest['date'] = easynvest.date.map(lambda date: date.replace(day=1) - timedelta(days=1))
+    return easynvest
+
+
 def rename_columns(loaded):
     """Rename columns to more programmable ones."""
     column_names = {
@@ -77,13 +85,18 @@ def rename_columns(loaded):
 
 def preprocess(loaded, filepath):
     """Preprocess easynvest exported files"""
-    loaded = date_from_filename(loaded, filepath)
     loaded = rename_columns(loaded)
+    loaded = date_from_filename(loaded, filepath)
+    loaded = move_date_end_previous_month(loaded)
     return loaded
 
 
 def preprocess_temp(data):
-    return easynvest_fixed_term.preprocess(data)
+    content = [
+        easynvest_fixed_term.preprocess(data),
+        easynvest_variable.preprocess(data),
+    ]
+    return pd.concat(content, sort=False)
 
 
 def load(data_path=None):

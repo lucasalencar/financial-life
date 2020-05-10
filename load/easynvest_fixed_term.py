@@ -1,13 +1,5 @@
-from datetime import timedelta
-
 import pandas as pd
 import record_summary as rs
-
-def move_date_end_previous_month(easynvest):
-    easynvest['date'] = pd.to_datetime(easynvest['date'], format="%Y-%m-%d")
-    easynvest['date'] = easynvest.date.map(lambda date:
-                                           date.replace(day=1) - timedelta(days=1))
-    return easynvest
 
 
 def add_amount(easynvest):
@@ -47,7 +39,6 @@ def add_goals(easynvest):
 def preprocess(easynvest):
     # Select fixed term investments
     fixed_term = easynvest[easynvest.type.isin(['LCA', 'LCI', 'CDB'])].copy()
-    fixed_term = move_date_end_previous_month(fixed_term)
     # Fix description to first letter capitalized
     fixed_term['description'] = fixed_term.description.str.title()
     # Add title based on type and description
