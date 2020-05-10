@@ -5,13 +5,16 @@ import record_summary as rs
 import date_helpers as dth
 
 
+FILENAME_PATTERN = '/Exportar_custodia_([0-9\-]+).csv'
+
+
 def list_exported_files(filepath):
     file_pattern = 'Exportar_custodia_*.csv'
     return read.list_all_files_for(filepath, file_pattern)
 
 
 def parse_file_names(all_files, filepath):
-    pattern = re.compile(filepath + '/Exportar_custodia_([0-9\-]+).csv')
+    pattern = re.compile(filepath + FILENAME_PATTERN)
 
     files = []
 
@@ -39,11 +42,28 @@ def earliest_each_month(parsed_files):
 def earliest_by_month_exported(filepath):
     all_files = list_exported_files(filepath)
     parsed_files = parse_file_names(all_files, filepath)
-    parsed_files['date'] = pd.to_datetime(parsed_files['exported_at'], format="%Y-%m-%d")
+    parsed_files['date'] = pd.to_datetime(parsed_files['exported_at'],
+                                          format="%Y-%m-%d")
     return earliest_each_month(parsed_files)
+
+# Preprocess functions
+
+def date_from_filename(loaded, filepath):
+    pattern = re.compile(filepath + FILENAME_PATTERN)
+    loaded['date'] = loaded.filename.map(lambda filename:
+                                         pattern.match(filename).group(1))
+    return loaded
+
+
+def preprocess(loaded, filepath):
+    return date_from_filename(loaded, filepath)
 
 
 def load(data_path=None):
     files = earliest_by_month_exported(data_path)
-    easynvest = read.read_all_csv_for(files, sep=';', encoding='latin', header=1)
-    return easynvest
+    easynvest = read.read_all_csv_for(files,
+                                      sep=';',
+                                      encoding='latin',
+                                      header=1)
+    return preprocess(easynvest, data_path)
+
