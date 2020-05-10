@@ -54,9 +54,22 @@ def date_from_filename(loaded, filepath):
                                          pattern.match(filename).group(1))
     return loaded
 
+COLUMN_NAMES = {
+    'TIPO DE INVESTIMENTO': 'type',
+    'DESCRIÇÃO': 'description',
+    'VENCIMENTO': 'maturity date',
+    'TAXA NEGOCIADA': 'index',
+    'QUANTIDADE': 'quantity',
+    'VALOR APLICADO': 'application',
+    'VALOR BRUTO': 'gross amount',
+    'VALOR LÍQUIDO': 'net amount',
+}
+
 
 def preprocess(loaded, filepath):
-    return date_from_filename(loaded, filepath)
+    loaded = date_from_filename(loaded, filepath)
+    loaded = loaded.rename(index=str, columns=COLUMN_NAMES)
+    return loaded
 
 
 def load(data_path=None):
