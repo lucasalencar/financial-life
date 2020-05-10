@@ -88,13 +88,10 @@ def preprocess(loaded, filepath):
     loaded = rename_columns(loaded)
     loaded = date_from_filename(loaded, filepath)
     loaded = move_date_end_previous_month(loaded)
-    return loaded
 
-
-def preprocess_temp(data):
     content = [
-        easynvest_fixed_term.preprocess(data),
-        easynvest_variable.preprocess(data),
+        easynvest_fixed_term.preprocess(loaded),
+        easynvest_variable.preprocess(loaded),
     ]
     return pd.concat(content, sort=False)
 
