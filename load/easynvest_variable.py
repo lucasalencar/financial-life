@@ -8,6 +8,7 @@ def add_title(data):
         'MAGNETIS DIVERSIFICAÇÃO AÇÕES FI':            'Magnetis Diversificação Ações',
         'MAGNETIS DIVERSIFICAÇÃO MULTIMERCADO FIC FI': 'Magnetis Diversificação Multimercados',
         'MAGNETIS DIVERSIFICAÇÃO RF FIC CP':           'Magnetis Diversificação Renda Fixa',
+        'Magnetis Diversif RF FIC CP':                 'Magnetis Diversificação Renda Fixa',
         'TARPON GT FIC FIA':                           'TARPON GT FIC FIA',
         'BRAX11':                                      'BRAX11',
     }
@@ -30,6 +31,7 @@ def add_type(data):
         'MAGNETIS DIVERSIFICAÇÃO AÇÕES FI':            'Fundos Ações',
         'MAGNETIS DIVERSIFICAÇÃO MULTIMERCADO FIC FI': 'Fundos Multimercado',
         'MAGNETIS DIVERSIFICAÇÃO RF FIC CP':           'Fundos Renda Fixa',
+        'Magnetis Diversif RF FIC CP':                 'Fundos Renda Fixa',
         'TARPON GT FIC FIA':                           'Fundos Ações',
         'BRAX11':                                      'Ações',
     }
