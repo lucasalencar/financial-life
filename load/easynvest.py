@@ -88,15 +88,28 @@ def preprocess(loaded, filepath):
     loaded = rename_columns(loaded)
     loaded = date_from_filename(loaded, filepath)
     loaded = move_date_end_previous_month(loaded)
+    return loaded
+
+
+
+def load(data_path=None):
+    """Load and preprocess easynvest exported files"""
+    files = earliest_by_month_exported(data_path)
+    easynvest = read.read_all_csv_for(files,
+                                      sep=';',
+                                      encoding='latin',
+                                      header=1)
+
+    easynvest = preprocess(easynvest, data_path)
 
     content = [
-        easynvest_fixed_term.preprocess(loaded),
-        easynvest_variable.preprocess(loaded),
+        easynvest_fixed_term.preprocess(easynvest),
+        easynvest_variable.preprocess(easynvest),
     ]
     return pd.concat(content, sort=False)
 
 
-def load(data_path=None):
+def raw_load(data_path=None):
     """Load and preprocess easynvest exported files"""
     files = earliest_by_month_exported(data_path)
     easynvest = read.read_all_csv_for(files,
