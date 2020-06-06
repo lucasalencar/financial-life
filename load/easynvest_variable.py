@@ -1,6 +1,6 @@
 import pandas as pd
 import record_summary as rs
-
+import date_helpers
 
 def add_title(data):
     title_mapping = {
@@ -13,15 +13,6 @@ def add_title(data):
         'BRAX11':                                      'BRAX11',
     }
     data['title'] = data.description.apply(lambda row: title_mapping[row])
-    return data
-
-
-def add_amount(data):
-    data['amount'] = data['gross amount'].map(lambda amount:
-                                              amount
-                                              .replace('R$', '')
-                                              .replace('.', '')
-                                              .replace(',', '.')).astype(float)
     return data
 
 
@@ -66,10 +57,54 @@ def add_goals(data):
     data['goals'] = data.description.apply(lambda row: goals_mapping[row])
     return data
 
+
+def normalize_amount(data, column):
+    data['amount'] = data[column]\
+        .dropna()\
+        .map(lambda amount:
+             amount
+             .replace('R$', '')
+             .replace('.', '')
+             .replace(',', '.')).astype(float)
+    return data
+
+
 def preprocess_invested(funds):
+    funds = normalize_amount(funds, 'gross amount')
     funds = rs.total_amount_by(['date', 'title', 'type'], funds).reset_index()
     funds['category'] = 'valor aplicado'
     return funds
+
+
+def compute_applications(data, base_date):
+    previous_month_data = rs.records_for_month(data,
+                                               date_helpers.previous_month(base_date))
+    current_month_data = rs.records_for_month(data, base_date)
+    difference = rs.total_amount_by(['title', 'type'],
+                                    current_month_data) - rs.total_amount_by(['title', 'type'],
+                                                                             previous_month_data)
+    return difference.amount
+
+
+def preprocess_applications(funds):
+    funds = normalize_amount(funds, 'application')
+    funds = rs.total_amount_by(['date', 'title', 'type'], funds).reset_index()
+
+    funds = rs.describe_over_time(funds, compute_applications)\
+        .transpose()\
+        .reset_index()\
+        .melt(id_vars=['title', 'type'],
+              var_name='date',
+              value_name='amount')
+
+    # Fix date to be in the beginning of month
+    funds['date'] = pd.to_datetime(funds.date\
+                                   .map(lambda d: date_helpers.beginning_of_month(rs.month_to_date(d))))
+    funds['category'] = 'aplicação'
+
+    # Remove first month because there is no record for its previous month
+    funds = funds[funds.date > funds.date.min()]
+    return funds[['date', 'title', 'type', 'amount', 'category']]
 
 
 def preprocess(data):
@@ -78,8 +113,12 @@ def preprocess(data):
 
     # Add new columns
     funds = add_title(funds)
-    funds = add_amount(funds)
     funds = add_type(funds)
     funds = add_goals(funds)
 
-    return preprocess_invested(funds)
+    content = [
+        preprocess_invested(funds),
+        preprocess_applications(funds),
+    ]
+    funds = pd.concat(content, sort=False)
+    return funds
