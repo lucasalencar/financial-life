@@ -45,6 +45,7 @@ def add_account(data):
         'MAGNETIS DIVERSIFICAÇÃO AÇÕES FI':            'Magnetis',
         'MAGNETIS DIVERSIFICAÇÃO MULTIMERCADO FIC FI': 'Magnetis',
         'MAGNETIS DIVERSIFICAÇÃO RF FIC CP':           'Magnetis',
+        'Magnetis Diversif RF FIC CP':                 'Magnetis',
         'TARPON GT FIC FIA':                           'Easynvest',
         'BRAX11':                                      'Magnetis',
     }
@@ -54,25 +55,29 @@ def add_account(data):
 
 def add_goals(data):
     goals_mapping = {
-        'Brasil Plural Yield Fundo de Investimento Renda Fixa Referen': 'Aposentadoria',
-        'Magnetis Diversificação Ações':                                'Aposentadoria',
-        'Magnetis Diversificação Multimercados':                        'Aposentadoria',
-        'Magnetis Diversificação Renda Fixa':                           'Aposentadoria',
-        'TARPON GT FIC FIA':                                            'Aposentadoria',
-        'BRAX11':                                                       'Aposentadoria',
+        'BRASIL PLURAL YIELD FIRF REFERENCIADO DI':    'Aposentadoria',
+        'MAGNETIS DIVERSIFICAÇÃO AÇÕES FI':            'Aposentadoria',
+        'MAGNETIS DIVERSIFICAÇÃO MULTIMERCADO FIC FI': 'Aposentadoria',
+        'MAGNETIS DIVERSIFICAÇÃO RF FIC CP':           'Aposentadoria',
+        'Magnetis Diversif RF FIC CP':                 'Aposentadoria',
+        'TARPON GT FIC FIA':                           'Aposentadoria',
+        'BRAX11':                                      'Aposentadoria',
     }
-    data['goals'] = data.title.apply(lambda row: goals_mapping[row])
+    data['goals'] = data.description.apply(lambda row: goals_mapping[row])
     return data
 
 
 def preprocess(data):
     # Select only funds and stocks
     funds = data[data.type.isin(['Fundos de investimentos', 'Ações'])].copy()
+
+    # Add new columns
     funds = add_title(funds)
     funds = add_amount(funds)
     funds = add_type(funds)
+    funds = add_goals(funds)
+
     # Sum total amont by date, title and type
     funds = rs.total_amount_by(['date', 'title', 'type'], funds).reset_index()
     funds['category'] = 'valor aplicado'
-    funds = add_goals(funds)
     return funds
