@@ -2,6 +2,8 @@ import pandas as pd
 import record_summary as rs
 import date_helpers
 
+from investments import filters
+
 def add_title(data):
     title_mapping = {
         'BRASIL PLURAL YIELD FIRF REFERENCIADO DI':    'Brasil Plural Yield Fundo de Investimento Renda Fixa Referen',
@@ -98,13 +100,30 @@ def preprocess_applications(funds):
               value_name='amount')
 
     # Fix date to be in the beginning of month
-    funds['date'] = pd.to_datetime(funds.date\
-                                   .map(lambda d: date_helpers.beginning_of_month(rs.month_to_date(d))))
+    funds['date'] = pd.to_datetime(funds.date
+                                   .map(lambda d:
+                                        date_helpers.beginning_of_month(rs.month_to_date(d))))
     funds['category'] = 'aplicação'
 
     # Remove first month because there is no record for its previous month
     funds = funds[funds.date > funds.date.min()]
     return funds[['date', 'title', 'type', 'amount', 'category']]
+
+
+def compute_liquidations(row, invested):
+    begin, end = date_helpers.month_day_range(date_helpers.previous_month(row.date))
+    amount = invested[(invested.date >= pd.Timestamp(begin)) &
+                      (invested.date <= pd.Timestamp(end)) &
+                      (invested.title == row.title)].amount
+    return amount * -1
+
+
+def preprocess_liquidations(funds):
+    applications = filters.applications(funds)
+    invested = filters.invested(funds)
+    liquidations = applications[applications.amount.isna()].copy()
+    liquidations['amount'] = liquidations.apply(lambda row: compute_liquidations(row, invested), axis=1)
+    return liquidations
 
 
 def preprocess(data):
@@ -121,4 +140,5 @@ def preprocess(data):
         preprocess_applications(funds),
     ]
     funds = pd.concat(content, sort=False)
-    return funds
+    funds = pd.concat([funds, preprocess_liquidations(funds)], sort=False)
+    return funds.dropna()
