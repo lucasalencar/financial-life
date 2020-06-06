@@ -58,4 +58,4 @@ def describe_over_time(data, describe_fn):
     for month in available_months(data):
         data_over_time[month] = describe_fn(data, month_to_date(month))
     return pd.DataFrame(data_over_time, columns=sorted(data_over_time.keys()))\
-        .replace([np.inf, -np.inf], np.nan).fillna(0).transpose()
+        .replace([np.inf, -np.inf], np.nan).transpose()
