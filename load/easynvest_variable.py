@@ -66,6 +66,11 @@ def add_goals(data):
     data['goals'] = data.description.apply(lambda row: goals_mapping[row])
     return data
 
+def preprocess_invested(funds):
+    funds = rs.total_amount_by(['date', 'title', 'type'], funds).reset_index()
+    funds['category'] = 'valor aplicado'
+    return funds
+
 
 def preprocess(data):
     # Select only funds and stocks
@@ -77,7 +82,4 @@ def preprocess(data):
     funds = add_type(funds)
     funds = add_goals(funds)
 
-    # Sum total amont by date, title and type
-    funds = rs.total_amount_by(['date', 'title', 'type'], funds).reset_index()
-    funds['category'] = 'valor aplicado'
-    return funds
+    return preprocess_invested(funds)
