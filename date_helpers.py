@@ -2,6 +2,15 @@ import calendar
 import pandas as pd
 
 
+def beginning_of_month(date):
+    return date.replace(day=1)
+
+
+def end_of_month(date):
+    import calendar
+    return date.replace(day=calendar.monthrange(date.year, date.month)[1])
+
+
 def month_day_range(date):
     """
     For a date 'date' returns the start and end date for the month of 'date'.
@@ -18,10 +27,7 @@ def month_day_range(date):
 
     https://gist.github.com/waynemoore/1109153
     """
-    import calendar
-    first_day = date.replace(day=1)
-    last_day = date.replace(day=calendar.monthrange(date.year, date.month)[1])
-    return first_day, last_day
+    return beginning_of_month(date), end_of_month(date)
 
 
 def previous_month(date):
