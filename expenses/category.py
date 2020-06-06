@@ -53,7 +53,7 @@ def over_time(expenses, incomes, column):
         post_describe_fn = lambda x: x['amount #'] * -1
     else:
         post_describe_fn = lambda x: x[column]
-    return describe_over_time(expenses, incomes, post_describe_fn)
+    return describe_over_time(expenses, incomes, post_describe_fn).fillna(0)
 
 
 def food_expenses(expenses, base_date):
