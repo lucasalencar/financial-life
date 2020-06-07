@@ -5,6 +5,7 @@ import re
 from load import read
 from load import easynvest_fixed_term
 from load import easynvest_variable
+from investments import filters
 
 import record_summary as rs
 import date_helpers as dth
@@ -88,7 +89,79 @@ def preprocess(loaded, filepath):
     loaded = rename_columns(loaded)
     loaded = date_from_filename(loaded, filepath)
     loaded = move_date_end_previous_month(loaded)
-    return loaded
+    content = [
+        easynvest_fixed_term.preprocess(loaded),
+        easynvest_variable.preprocess(loaded),
+    ]
+    return pd.concat(content, sort=False)
+
+
+def normalize_amount(data, column):
+    data['amount'] = data[column]\
+        .dropna()\
+        .map(lambda amount:
+             amount
+             .replace('R$', '')
+             .replace('.', '')
+             .replace(',', '.')).astype(float)
+    return data
+
+
+def preprocess_invested(funds):
+    funds = normalize_amount(funds, 'gross amount')
+    funds = rs.total_amount_by(['date', 'title', 'type', 'account', 'goal'], funds).reset_index()
+    funds['category'] = 'valor aplicado'
+    return funds
+
+
+APPLICATIONS_GROUPBY = ['title', 'type', 'account', 'goal']
+
+
+def compute_applications(data, base_date):
+    previous_month_data = rs.records_for_month(data,
+                                               dth.previous_month(base_date))
+    current_month_data = rs.records_for_month(data, base_date)
+    difference = rs.total_amount_by(APPLICATIONS_GROUPBY,
+                                    current_month_data) - rs.total_amount_by(APPLICATIONS_GROUPBY,
+                                                                             previous_month_data)
+    return difference.amount
+
+
+def preprocess_applications(funds):
+    funds = normalize_amount(funds, 'application')
+    funds = rs.total_amount_by(['date', 'title', 'type', 'account', 'goal'], funds).reset_index()
+    funds = rs.describe_over_time(funds, compute_applications)\
+        .transpose()\
+        .reset_index()\
+        .melt(id_vars=APPLICATIONS_GROUPBY,
+              var_name='date',
+              value_name='amount')
+
+    # Fix date to be in the beginning of month
+    funds['date'] = pd.to_datetime(funds.date
+                                   .map(lambda d:
+                                        dth.beginning_of_month(rs.month_to_date(d))))
+    funds['category'] = 'aplicação'
+
+    # Remove first month because there is no record for its previous month
+    funds = funds[funds.date > funds.date.min()]
+    return funds
+
+
+def compute_liquidations(date, title, invested):
+    begin, end = dth.month_day_range(dth.previous_month(date))
+    amount = invested[(invested.date >= pd.Timestamp(begin)) &
+                      (invested.date <= pd.Timestamp(end)) &
+                      (invested.title == title)].amount.iloc[0]
+    return amount * -1
+
+
+def preprocess_liquidations(funds):
+    applications = filters.applications(funds)
+    invested = filters.invested(funds)
+    liquidations = applications[applications.amount.isna()].copy()
+    liquidations['amount'] = liquidations.apply(lambda row: compute_liquidations(row.date, row.title, invested), axis=1)
+    return liquidations
 
 
 def load(data_path=None):
@@ -102,10 +175,13 @@ def load(data_path=None):
     easynvest = preprocess(easynvest, data_path)
 
     content = [
-        easynvest_fixed_term.preprocess(easynvest),
-        easynvest_variable.preprocess(easynvest),
+        preprocess_invested(easynvest),
+        preprocess_applications(easynvest),
     ]
-    return pd.concat(content, sort=False)
+    funds = pd.concat(content, sort=False)
+    funds = pd.concat([funds, preprocess_liquidations(funds)], sort=False)
+    return funds.dropna()
+
 
 
 def raw_load(data_path=None):

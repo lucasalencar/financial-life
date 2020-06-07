@@ -45,17 +45,5 @@ def preprocess(easynvest):
     fixed_term['title'] = fixed_term.type + ' ' + fixed_term.description
     fixed_term = add_accounts(fixed_term)
     fixed_term = add_goals(fixed_term)
+    return fixed_term
 
-    fixed_term = add_amount(fixed_term)
-    # Sum grouping by date, title and type
-    fixed_term = rs.total_amount_by(['date', 'title', 'type', 'account', 'goal'], fixed_term)\
-        .reset_index()
-    fixed_term['category'] = 'valor aplicado'
-    # reorder columns to make easier to compare
-    return fixed_term[['date',
-                       'title',
-                       'category',
-                       'amount',
-                       'account',
-                       'type',
-                       'goal']]
