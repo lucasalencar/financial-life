@@ -56,7 +56,7 @@ def add_goals(data):
         'TARPON GT FIC FIA':                           'Aposentadoria',
         'BRAX11':                                      'Aposentadoria',
     }
-    data['goals'] = data.description.apply(lambda row: goals_mapping[row])
+    data['goal'] = data.description.apply(lambda row: goals_mapping[row])
     return data
 
 
@@ -73,29 +73,31 @@ def normalize_amount(data, column):
 
 def preprocess_invested(funds):
     funds = normalize_amount(funds, 'gross amount')
-    funds = rs.total_amount_by(['date', 'title', 'type'], funds).reset_index()
+    funds = rs.total_amount_by(['date', 'title', 'type', 'account', 'goal'], funds).reset_index()
     funds['category'] = 'valor aplicado'
     return funds
+
+
+APPLICATIONS_GROUPBY = ['title', 'type', 'account', 'goal']
 
 
 def compute_applications(data, base_date):
     previous_month_data = rs.records_for_month(data,
                                                date_helpers.previous_month(base_date))
     current_month_data = rs.records_for_month(data, base_date)
-    difference = rs.total_amount_by(['title', 'type'],
-                                    current_month_data) - rs.total_amount_by(['title', 'type'],
+    difference = rs.total_amount_by(APPLICATIONS_GROUPBY,
+                                    current_month_data) - rs.total_amount_by(APPLICATIONS_GROUPBY,
                                                                              previous_month_data)
     return difference.amount
 
 
 def preprocess_applications(funds):
     funds = normalize_amount(funds, 'application')
-    funds = rs.total_amount_by(['date', 'title', 'type'], funds).reset_index()
-
+    funds = rs.total_amount_by(['date', 'title', 'type', 'account', 'goal'], funds).reset_index()
     funds = rs.describe_over_time(funds, compute_applications)\
         .transpose()\
         .reset_index()\
-        .melt(id_vars=['title', 'type'],
+        .melt(id_vars=APPLICATIONS_GROUPBY,
               var_name='date',
               value_name='amount')
 
@@ -107,7 +109,7 @@ def preprocess_applications(funds):
 
     # Remove first month because there is no record for its previous month
     funds = funds[funds.date > funds.date.min()]
-    return funds[['date', 'title', 'type', 'amount', 'category']]
+    return funds
 
 
 def compute_liquidations(row, invested):
@@ -133,6 +135,7 @@ def preprocess(data):
     # Add new columns
     funds = add_title(funds)
     funds = add_type(funds)
+    funds = add_account(funds)
     funds = add_goals(funds)
 
     content = [

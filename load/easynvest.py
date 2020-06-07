@@ -91,7 +91,6 @@ def preprocess(loaded, filepath):
     return loaded
 
 
-
 def load(data_path=None):
     """Load and preprocess easynvest exported files"""
     files = earliest_by_month_exported(data_path)
