@@ -150,10 +150,14 @@ def preprocess_applications(funds):
 
 def compute_liquidations(date, title, invested):
     begin, end = dth.month_day_range(dth.previous_month(date))
+
     amount = invested[(invested.date >= pd.Timestamp(begin)) &
                       (invested.date <= pd.Timestamp(end)) &
-                      (invested.title == title)].amount.iloc[0]
-    return amount * -1
+                      (invested.title == title)].amount
+    if amount.empty:
+        return 0
+    else:
+        return amount.iloc[0] * -1
 
 
 def preprocess_liquidations(funds):

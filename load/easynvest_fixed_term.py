@@ -13,10 +13,11 @@ def add_amount(easynvest):
 
 def add_accounts(easynvest):
     account_mapping = {
-        'CDB Banco Indusval': 'Magnetis',
-        'CDB Banco Maxima':   'Magnetis',
-        'LCA Banco Maxima':   'Magnetis',
-        'LCI Banco Maxima':   'Magnetis',
+        'CDB Banco Indusval':        'Magnetis',
+        'CDB Voiter Banco Indusval': 'Magnetis',
+        'CDB Banco Maxima':          'Magnetis',
+        'LCA Banco Maxima':          'Magnetis',
+        'LCI Banco Maxima':          'Magnetis',
     }
 
     easynvest['account'] = easynvest.title.apply(lambda row:
@@ -26,10 +27,11 @@ def add_accounts(easynvest):
 
 def add_goals(easynvest):
     goals_mapping = {
-        'CDB Banco Indusval': 'Aposentadoria',
-        'CDB Banco Maxima':   'Aposentadoria',
-        'LCA Banco Maxima':   'Aposentadoria',
-        'LCI Banco Maxima':   'Aposentadoria',
+        'CDB Banco Indusval':        'Aposentadoria',
+        'CDB Voiter Banco Indusval': 'Aposentadoria',
+        'CDB Banco Maxima':          'Aposentadoria',
+        'LCA Banco Maxima':          'Aposentadoria',
+        'LCI Banco Maxima':          'Aposentadoria',
     }
 
     easynvest['goal'] = easynvest.title.apply(lambda row: goals_mapping[row])
