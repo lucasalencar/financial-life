@@ -11,6 +11,17 @@ def add_amount(easynvest):
     return easynvest
 
 
+def add_title(fixed_term):
+    # Fix description to first letter capitalized
+    fixed_term['description'] = fixed_term.description.str.title()
+    # Add title based on type and description
+    fixed_term['title'] = fixed_term.type + ' ' + fixed_term.description
+    renamings = {
+        'CDB Voiter Banco Indusval': 'CDB Banco Indusval',
+    }
+    return fixed_term.replace(renamings)
+
+
 def add_accounts(easynvest):
     account_mapping = {
         'CDB Banco Indusval':        'Magnetis',
@@ -41,10 +52,7 @@ def add_goals(easynvest):
 def preprocess(easynvest):
     # Select fixed term investments
     fixed_term = easynvest[easynvest.type.isin(['LCA', 'LCI', 'CDB'])].copy()
-    # Fix description to first letter capitalized
-    fixed_term['description'] = fixed_term.description.str.title()
-    # Add title based on type and description
-    fixed_term['title'] = fixed_term.type + ' ' + fixed_term.description
+    fixed_term = add_title(fixed_term)
     fixed_term = add_accounts(fixed_term)
     fixed_term = add_goals(fixed_term)
     return fixed_term
