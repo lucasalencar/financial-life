@@ -21,29 +21,56 @@ def roi(incomes, base_date):
 
     return (invested - applications) / applications
 
+
+def invested_over_time(invest):
+    return rs.describe_over_time(invest,
+                                 lambda data, date:
+                                 tt.invested_for_month_by('title', invest, date)
+                                 .sum()).amount
+
+
+def return_over_time(invest):
+    return rs.describe_over_time(invest,
+                                 lambda data, date:
+                                 tt.absolute_return_for_month(data, date)
+                                 .sum()).amount
+
+
+def applications_over_time(invest):
+    return rs.describe_over_time(invest,
+                                 lambda data, date:
+                                 tt.applications_for_month(data, date)
+                                 .sum()).amount
+
+
+def monthly_return_over_time(invest):
+    return rs.describe_over_time(invest,
+                                 lambda data, date:
+                                 pd.Series(tt.total_monthly_return(data, date),
+                                           index=['amount'])).amount
+
+
+def roi_over_time(invest):
+    return rs.describe_over_time(invest,
+                                 lambda data, date:
+                                 pd.Series(roi(data, date), index=['amount'])).amount
+
+
+def cumulative_return_over_time(invest):
+    return return_over_time(invest).cumsum()
+
+
 def summary(invest, start_date, end_date):
-    invested = rs.describe_over_time(invest,
-                                     lambda data, date:
-                                     tt.invested_for_month_by('title', invest, date)
-                                     .sum()).amount
-    invest_return = rs.describe_over_time(invest,
-                                          lambda data, date:
-                                          tt.absolute_return_for_month(data, date)
-                                          .sum()).amount
-    applications = rs.describe_over_time(invest,
-                                         lambda data, date:
-                                         tt.applications_for_month(data, date)
-                                         .sum()).amount
-    monthly_return = rs.describe_over_time(invest,
-                                           lambda data, date:
-                                           pd.Series(tt.total_monthly_return(data, date),
-                                                     index=['amount'])).amount
-    invest_roi = rs.describe_over_time(invest,
-                                       lambda data, date:
-                                       pd.Series(roi(data, date), index=['amount'])).amount
+    invested = invested_over_time(invest)
+    invest_return = return_over_time(invest)
+    cumulative_return = cumulative_return_over_time(invest)
+    applications = applications_over_time(invest)
+    monthly_return = monthly_return_over_time(invest)
+    invest_roi = roi_over_time(invest)
 
     summary = {'Total': invested,
                'Return': invest_return,
+               'Cumulative Return': cumulative_return,
                'Return / Total': invest_return / invested,
                'Applications': applications,
                'Monthly Return': monthly_return,
@@ -56,6 +83,7 @@ def summary(invest, start_date, end_date):
 ASSETS_SUMMARY_COLS_FORMAT = {
     'Total': fmt.BR_CURRENCY_FORMAT,
     'Return': fmt.BR_CURRENCY_FORMAT,
+    'Cumulative Return': fmt.BR_CURRENCY_FORMAT,
     'Return / Total': fmt.PERC_FORMAT,
     'Applications': fmt.BR_CURRENCY_FORMAT,
     'Monthly Return': fmt.PERC_FORMAT,
