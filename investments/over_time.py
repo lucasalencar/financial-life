@@ -23,3 +23,7 @@ def return_percentage_over_time(invest):
 
 def cumulative_return_over_time(invest):
     return rs.describe_over_time(invest, absolute_return_amount_by_date).cumsum()
+
+
+def cumulative_percentage_return_over_time(invest):
+    return rs.describe_over_time(invest, absolute_return_amount_percentage_by_date).cumsum()
