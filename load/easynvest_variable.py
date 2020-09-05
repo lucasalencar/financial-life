@@ -4,59 +4,71 @@ import date_helpers
 
 from investments import filters
 
+TITLES_TABLE = {
+    'Brasil Plural Yield Fundo de Investimento Renda Fixa Referen': {
+        'type': 'Fundos DI',
+        'account': 'Magnetis',
+        'goal': 'Aposentadoria',
+    },
+    'Magnetis Diversificação Ações': {
+        'type': 'Fundos Ações',
+        'account': 'Magnetis',
+        'goal': 'Aposentadoria',
+    },
+    'Magnetis Diversificação Multimercados': {
+        'type': 'Fundos Multimercado',
+        'account': 'Magnetis',
+        'goal': 'Aposentadoria',
+    },
+    'Magnetis Diversificação Renda Fixa': {
+        'type': 'Fundos Renda Fixa',
+        'account': 'Magnetis',
+        'goal': 'Aposentadoria',
+    },
+    'TARPON GT FIC FIA': {
+        'type': 'Fundos Ações',
+        'account': 'Easynvest',
+        'goal': 'Aposentadoria',
+    },
+    'BRAX11': {
+        'type': 'Ações',
+        'account': 'Magnetis',
+        'goal': 'Aposentadoria',
+    },
+    'GTWR11': {
+        'type': 'Fundos Imobiliários',
+        'account': 'Easynvest',
+        'goal': 'Aposentadoria',
+    },
+}
+
 def add_title(data):
     title_mapping = {
         'BRASIL PLURAL YIELD FIRF REFERENCIADO DI':    'Brasil Plural Yield Fundo de Investimento Renda Fixa Referen',
         'MAGNETIS DIVERSIFICAÇÃO AÇÕES FI':            'Magnetis Diversificação Ações',
+        'Magnetis Diversif Ações FIA':                 'Magnetis Diversificação Ações',
         'MAGNETIS DIVERSIFICAÇÃO MULTIMERCADO FIC FI': 'Magnetis Diversificação Multimercados',
+        'Magnetis Diversif FIM FIC':                   'Magnetis Diversificação Multimercados',
         'MAGNETIS DIVERSIFICAÇÃO RF FIC CP':           'Magnetis Diversificação Renda Fixa',
         'Magnetis Diversif RF FIC CP':                 'Magnetis Diversificação Renda Fixa',
-        'TARPON GT FIC FIA':                           'TARPON GT FIC FIA',
-        'BRAX11':                                      'BRAX11',
+        'Tarpon GT FIC FIA':                           'TARPON GT FIC FIA',
     }
-    data['title'] = data.description.apply(lambda row: title_mapping[row])
+    data['title'] = data.description.apply(lambda row: title_mapping.get(row, row))
     return data
 
 
 def add_type(data):
-    type_mapping = {
-        'BRASIL PLURAL YIELD FIRF REFERENCIADO DI':    'Fundos DI',
-        'MAGNETIS DIVERSIFICAÇÃO AÇÕES FI':            'Fundos Ações',
-        'MAGNETIS DIVERSIFICAÇÃO MULTIMERCADO FIC FI': 'Fundos Multimercado',
-        'MAGNETIS DIVERSIFICAÇÃO RF FIC CP':           'Fundos Renda Fixa',
-        'Magnetis Diversif RF FIC CP':                 'Fundos Renda Fixa',
-        'TARPON GT FIC FIA':                           'Fundos Ações',
-        'BRAX11':                                      'Ações',
-    }
-    data['type'] = data.description.apply(lambda row: type_mapping[row])
+    data['type'] = data.title.apply(lambda row: TITLES_TABLE[row]['type'])
     return data
 
 
 def add_account(data):
-    account_mapping = {
-        'BRASIL PLURAL YIELD FIRF REFERENCIADO DI':    'Magnetis',
-        'MAGNETIS DIVERSIFICAÇÃO AÇÕES FI':            'Magnetis',
-        'MAGNETIS DIVERSIFICAÇÃO MULTIMERCADO FIC FI': 'Magnetis',
-        'MAGNETIS DIVERSIFICAÇÃO RF FIC CP':           'Magnetis',
-        'Magnetis Diversif RF FIC CP':                 'Magnetis',
-        'TARPON GT FIC FIA':                           'Easynvest',
-        'BRAX11':                                      'Magnetis',
-    }
-    data['account'] = data.description.apply(lambda row: account_mapping[row])
+    data['account'] = data.title.apply(lambda row: TITLES_TABLE[row]['account'])
     return data
 
 
 def add_goals(data):
-    goals_mapping = {
-        'BRASIL PLURAL YIELD FIRF REFERENCIADO DI':    'Aposentadoria',
-        'MAGNETIS DIVERSIFICAÇÃO AÇÕES FI':            'Aposentadoria',
-        'MAGNETIS DIVERSIFICAÇÃO MULTIMERCADO FIC FI': 'Aposentadoria',
-        'MAGNETIS DIVERSIFICAÇÃO RF FIC CP':           'Aposentadoria',
-        'Magnetis Diversif RF FIC CP':                 'Aposentadoria',
-        'TARPON GT FIC FIA':                           'Aposentadoria',
-        'BRAX11':                                      'Aposentadoria',
-    }
-    data['goal'] = data.description.apply(lambda row: goals_mapping[row])
+    data['goal'] = data.title.apply(lambda row: TITLES_TABLE[row]['goal'])
     return data
 
 
