@@ -11,7 +11,7 @@ TITLES_TABLE = {
         'account': 'Magnetis',
         'goal': 'Aposentadoria',
     },
-    'LCI Banco Maxima': {
+    'LCI Banco Maxima 107% do CDI': {
         'account': 'Magnetis',
         'goal': 'Aposentadoria',
     },
@@ -47,7 +47,6 @@ def add_title(fixed_term):
         'CDB Banco Maxima 120% do CDI': 'CDB Banco Maxima',
         'CDB Banco Maxima 124% do CDI': 'CDB Banco Maxima',
         'CDB Banco Maxima 128% do CDI': 'CDB Banco Maxima',
-        'LCI Banco Maxima 107% do CDI': 'LCI Banco Maxima',
         'LCA Banco Maxima 100% do CDI': 'LCA Banco Maxima',
         'LCA Banco Maxima 101% do CDI': 'LCA Banco Maxima',
     }
