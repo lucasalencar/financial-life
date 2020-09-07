@@ -16,9 +16,9 @@ def add_title(fixed_term):
     fixed_term['description'] = fixed_term.description.str.title()
     # Add title based on type and description
     fixed_term['title'] = fixed_term.type + ' ' + fixed_term.description + ' ' + fixed_term['index']
+
     renamings = {
-        'CDB Voiter Banco Indusval 130% do CDI': 'CDB Banco Indusval',
-        'CDB Banco Indusval 130% do CDI': 'CDB Banco Indusval',
+        'CDB Voiter Banco Indusval 130% do CDI': 'CDB Banco Indusval 130% do CDI',
         'CDB Banco Maxima 107% do CDI': 'CDB Banco Maxima',
         'CDB Banco Maxima 114% do CDI': 'CDB Banco Maxima',
         'CDB Banco Maxima 116% do CDI': 'CDB Banco Maxima',
@@ -31,15 +31,16 @@ def add_title(fixed_term):
         'LCA Banco Maxima 100% do CDI': 'LCA Banco Maxima',
         'LCA Banco Maxima 101% do CDI': 'LCA Banco Maxima',
     }
-    return fixed_term.replace(renamings)
+    fixed_term['title'] = fixed_term.title.apply(lambda row: renamings.get(row, row))
+    return fixed_term
 
 
 def add_accounts(easynvest):
     account_mapping = {
-        'CDB Banco Indusval':        'Magnetis',
-        'CDB Banco Maxima':          'Magnetis',
-        'LCA Banco Maxima':          'Magnetis',
-        'LCI Banco Maxima':          'Magnetis',
+        'CDB Banco Indusval 130% do CDI': 'Magnetis',
+        'CDB Banco Maxima':               'Magnetis',
+        'LCA Banco Maxima':               'Magnetis',
+        'LCI Banco Maxima':               'Magnetis',
     }
 
     easynvest['account'] = easynvest.title.apply(lambda row:
@@ -49,10 +50,10 @@ def add_accounts(easynvest):
 
 def add_goals(easynvest):
     goals_mapping = {
-        'CDB Banco Indusval':        'Aposentadoria',
-        'CDB Banco Maxima':          'Aposentadoria',
-        'LCA Banco Maxima':          'Aposentadoria',
-        'LCI Banco Maxima':          'Aposentadoria',
+        'CDB Banco Indusval 130% do CDI': 'Aposentadoria',
+        'CDB Banco Maxima':               'Aposentadoria',
+        'LCA Banco Maxima':               'Aposentadoria',
+        'LCI Banco Maxima':               'Aposentadoria',
     }
 
     easynvest['goal'] = easynvest.title.apply(lambda row: goals_mapping[row])
