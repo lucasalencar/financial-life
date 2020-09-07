@@ -1,14 +1,10 @@
 import pandas as pd
 from investments import totals as tt
-
-
-def liquidations(incomes):
-    applications = tt.total_applications_by('title', incomes)
-    return applications[applications.amount <= 0]
+from investments import filters
 
 
 def liquidations_incomes(incomes):
-    finished = liquidations(incomes).reset_index().title
+    finished = filters.liquidations(incomes).reset_index().title
     return incomes[incomes.title.isin(list(finished))]
 
 

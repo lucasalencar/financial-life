@@ -1,5 +1,6 @@
 from datetime import datetime
 from investments import totals as tt
+from investments import filters
 
 import pandas as pd
 import numpy as np
