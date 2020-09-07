@@ -2,6 +2,26 @@ import pandas as pd
 import record_summary as rs
 
 
+TITLES_TABLE = {
+    'CDB Banco Indusval 130% do CDI': {
+        'account': 'Magnetis',
+        'goal': 'Aposentadoria',
+    },
+    'CDB Banco Maxima': {
+        'account': 'Magnetis',
+        'goal': 'Aposentadoria',
+    },
+    'LCI Banco Maxima': {
+        'account': 'Magnetis',
+        'goal': 'Aposentadoria',
+    },
+    'LCA Banco Maxima': {
+        'account': 'Magnetis',
+        'goal': 'Aposentadoria',
+    },
+}
+
+
 def add_amount(easynvest):
     easynvest['amount'] = easynvest['gross amount'].map(lambda amount:
                                                         amount
@@ -36,27 +56,12 @@ def add_title(fixed_term):
 
 
 def add_accounts(easynvest):
-    account_mapping = {
-        'CDB Banco Indusval 130% do CDI': 'Magnetis',
-        'CDB Banco Maxima':               'Magnetis',
-        'LCA Banco Maxima':               'Magnetis',
-        'LCI Banco Maxima':               'Magnetis',
-    }
-
-    easynvest['account'] = easynvest.title.apply(lambda row:
-                                                 account_mapping[row])
+    easynvest['account'] = easynvest.title.apply(lambda row: TITLES_TABLE[row]['account'])
     return easynvest
 
 
 def add_goals(easynvest):
-    goals_mapping = {
-        'CDB Banco Indusval 130% do CDI': 'Aposentadoria',
-        'CDB Banco Maxima':               'Aposentadoria',
-        'LCA Banco Maxima':               'Aposentadoria',
-        'LCI Banco Maxima':               'Aposentadoria',
-    }
-
-    easynvest['goal'] = easynvest.title.apply(lambda row: goals_mapping[row])
+    easynvest['goal'] = easynvest.title.apply(lambda row: TITLES_TABLE[row]['goal'])
     return easynvest
 
 
