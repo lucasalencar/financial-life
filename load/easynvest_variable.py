@@ -38,7 +38,7 @@ TITLES_TABLE = {
     'GTWR11': {
         'type': 'Fundos Imobiliários',
         'account': 'Easynvest',
-        'goal': 'Aposentadoria',
+        'goal': 'Experimento',
     },
 }
 
