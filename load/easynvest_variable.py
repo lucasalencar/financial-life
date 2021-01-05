@@ -31,12 +31,22 @@ TITLES_TABLE = {
         'goal': 'Aposentadoria',
     },
     'BRAX11': {
-        'type': 'Ações',
+        'type': 'ETF',
         'account': 'Magnetis',
         'goal': 'Aposentadoria',
     },
     'GTWR11': {
         'type': 'Fundos Imobiliários',
+        'account': 'Easynvest',
+        'goal': 'Experimento',
+    },
+    'BCFF11': {
+        'type': 'Fundos Imobiliários',
+        'account': 'Easynvest',
+        'goal': 'Experimento',
+    },
+    'IVVB11': {
+        'type': 'ETF',
         'account': 'Easynvest',
         'goal': 'Experimento',
     },
