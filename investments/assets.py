@@ -138,7 +138,7 @@ def goals(expenses, invest, start_date, base_date, birth_year):
     return pd.DataFrame([pms(expenses),
                          pmr(expenses),
                          pi(expenses, age(birth_year)),
-                         pnif(expenses, projected_return_for_year(invest, start_date, base_date)),
+                         pnif(expenses, annualized_return(invest, start_date, base_date)),
                          total(invest, base_date)], index=['PMS', 'PMR', 'PI', 'PNIF', 'Total'])
 
 
@@ -149,9 +149,9 @@ def style_goals(assets_goals):
         .applymap(fmt.green_background_threshold(threshold))
 
 
-def annualized_return(invest, base_date):
+def annualized_return(invest, start_date, end_date):
     """https://www.fool.com/knowledge-center/how-to-calculate-a-monthly-return-on-investment.aspx"""
-    return ((1 + tt.total_monthly_return(invest, base_date)) ** 12) - 1
+    return ((1 + summary(invest, start_date, end_date)['Return / Total'].mean()) ** 12) - 1
 
 
 def investment_goals(incomes, invest_goals):
