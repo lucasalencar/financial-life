@@ -38,15 +38,25 @@ TITLES_TABLE = {
     'GTWR11': {
         'type': 'Fundos Imobiliários',
         'account': 'Easynvest',
-        'goal': 'Experimento',
+        'goal': 'Aposentadoria',
     },
     'BCFF11': {
         'type': 'Fundos Imobiliários',
         'account': 'Easynvest',
-        'goal': 'Experimento',
+        'goal': 'Aposentadoria',
     },
     'IVVB11': {
         'type': 'ETF',
+        'account': 'Easynvest',
+        'goal': 'Experimento',
+    },
+    'BOVA11': {
+        'type': 'ETF',
+        'account': 'Easynvest',
+        'goal': 'Experimento',
+    },
+    'DISB34': {
+        'type': 'BDR',
         'account': 'Easynvest',
         'goal': 'Experimento',
     },
