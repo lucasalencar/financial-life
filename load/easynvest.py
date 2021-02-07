@@ -119,7 +119,7 @@ APPLICATIONS_GROUPBY = ['title', 'type', 'account', 'goal']
 
 def compute_applications(data, base_date):
     previous_month_data = rs.records_for_month(data,
-                                               dth.previous_month(base_date))
+                                               dth.months_ago(base_date, 1))
     current_month_data = rs.records_for_month(data, base_date)
     difference = rs.total_amount_by(APPLICATIONS_GROUPBY,
                                     current_month_data) - rs.total_amount_by(APPLICATIONS_GROUPBY,
@@ -149,7 +149,7 @@ def preprocess_applications(funds):
 
 
 def compute_liquidations(date, title, invested):
-    begin, end = dth.month_day_range(dth.previous_month(date))
+    begin, end = dth.month_day_range(dth.months_ago(date, 1))
 
     amount = invested[(invested.date >= pd.Timestamp(begin)) &
                       (invested.date <= pd.Timestamp(end)) &

@@ -15,7 +15,7 @@ def records_for_month(records, base_date):
 
 def records_for_previous_month(records, base_date):
     """Selects records that are in the previous month given the base_date."""
-    month_range = dth.month_day_range(dth.previous_month(base_date))
+    month_range = dth.month_day_range(dth.months_ago(base_date, 1))
     return records[(records.date >= pd.Timestamp(month_range[0])) &
                    (records.date <= pd.Timestamp(month_range[1]))]
 
