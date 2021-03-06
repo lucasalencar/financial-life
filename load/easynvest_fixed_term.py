@@ -35,6 +35,7 @@ def add_title(fixed_term):
     # Fix description to first letter capitalized
     fixed_term['description'] = fixed_term.description.str.title()
     # Add title based on type and description
+    # TODO Add maturity date to title
     fixed_term['title'] = fixed_term.type + ' ' + fixed_term.description + ' ' + fixed_term['index']
 
     renamings = {

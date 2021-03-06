@@ -66,7 +66,7 @@ TITLES_TABLE = {
         'goal': 'Experimento',
     },
     'MGLU3': {
-        'type': 'Ação',
+        'type': 'Ações',
         'account': 'Easynvest',
         'goal': 'Experimento',
     },
