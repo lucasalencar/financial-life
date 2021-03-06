@@ -55,8 +55,18 @@ TITLES_TABLE = {
         'account': 'Easynvest',
         'goal': 'Experimento',
     },
+    'SMAL11': {
+        'type': 'ETF',
+        'account': 'Easynvest',
+        'goal': 'Experimento',
+    },
     'DISB34': {
         'type': 'BDR',
+        'account': 'Easynvest',
+        'goal': 'Experimento',
+    },
+    'MGLU3': {
+        'type': 'Ação',
         'account': 'Easynvest',
         'goal': 'Experimento',
     },
