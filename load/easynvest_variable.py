@@ -70,6 +70,16 @@ TITLES_TABLE = {
         'account': 'Easynvest',
         'goal': 'Experimento',
     },
+    'MELI34': {
+        'type': 'BDR',
+        'account': 'Easynvest',
+        'goal': 'Experimento',
+    },
+    'TSLA34': {
+        'type': 'BDR',
+        'account': 'Easynvest',
+        'goal': 'Experimento',
+    },
 }
 
 def add_title(data):
