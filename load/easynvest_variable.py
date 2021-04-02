@@ -48,17 +48,17 @@ TITLES_TABLE = {
     'IVVB11': {
         'type': 'ETF',
         'account': 'Easynvest',
-        'goal': 'Experimento',
+        'goal': 'Aposentadoria',
     },
     'BOVA11': {
         'type': 'ETF',
         'account': 'Easynvest',
-        'goal': 'Experimento',
+        'goal': 'Aposentadoria',
     },
     'SMAL11': {
         'type': 'ETF',
         'account': 'Easynvest',
-        'goal': 'Experimento',
+        'goal': 'Aposentadoria',
     },
     'DISB34': {
         'type': 'BDR',
