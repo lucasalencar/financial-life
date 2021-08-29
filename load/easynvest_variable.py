@@ -60,6 +60,11 @@ TITLES_TABLE = {
         'account': 'Easynvest',
         'goal': 'Aposentadoria',
     },
+    'ISUS11': {
+        'type': 'ETF',
+        'account': 'Easynvest',
+        'goal': 'Experimento',
+    },
     'DISB34': {
         'type': 'BDR',
         'account': 'Easynvest',
