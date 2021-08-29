@@ -119,7 +119,12 @@ def add_goals(data):
 
 def preprocess(data):
     # Select only funds and stocks
-    funds = data[data.type.isin(['Fundos de investimentos', 'Ações'])].copy()
+    funds = data[data.type.isin(['Fundos de investimentos',
+                                 'Ações',
+                                 'FII',
+                                 'ETF',
+                                 'BDR',
+                                 'Ação'])].copy()
 
     # Add new columns
     funds = add_title(funds)
