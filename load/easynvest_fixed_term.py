@@ -39,6 +39,7 @@ def add_title(fixed_term):
     fixed_term['title'] = fixed_term.type + ' ' + fixed_term.description + ' ' + fixed_term['index']
 
     renamings = {
+        'CDB Banco Voiter 130% do CDI': 'CDB Banco Indusval 130% do CDI',
         'CDB Voiter Banco Indusval 130% do CDI': 'CDB Banco Indusval 130% do CDI',
         'CDB Banco Maxima 107% do CDI': 'CDB Banco Maxima',
         'CDB Banco Maxima 114% do CDI': 'CDB Banco Maxima',
