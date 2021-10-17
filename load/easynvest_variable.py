@@ -97,6 +97,7 @@ def add_title(data):
         'MAGNETIS DIVERSIFICAÇÃO RF FIC CP':           'Magnetis Diversificação Renda Fixa',
         'Magnetis Diversif RF FIC CP':                 'Magnetis Diversificação Renda Fixa',
         'Tarpon GT FIC FIA':                           'TARPON GT FIC FIA',
+        'MGLU3F':                                      'MGLU3',
     }
     data['title'] = data.description.apply(lambda row: title_mapping.get(row, row))
     return data
