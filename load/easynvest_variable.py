@@ -65,6 +65,11 @@ TITLES_TABLE = {
         'account': 'Easynvest',
         'goal': 'Experimento',
     },
+    'ECOO11': {
+        'type': 'ETF',
+        'account': 'Easynvest',
+        'goal': 'Experimento',
+    },
     'DISB34': {
         'type': 'BDR',
         'account': 'Easynvest',
@@ -81,6 +86,11 @@ TITLES_TABLE = {
         'goal': 'Experimento',
     },
     'TSLA34': {
+        'type': 'BDR',
+        'account': 'Easynvest',
+        'goal': 'Experimento',
+    },
+    'NUBR33': {
         'type': 'BDR',
         'account': 'Easynvest',
         'goal': 'Experimento',
