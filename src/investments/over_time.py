@@ -1,10 +1,10 @@
 from datetime import datetime
-from investments import totals as tt
-from investments import filters
+from . import totals as tt
+from . import filters
 
 import pandas as pd
 import numpy as np
-import record_summary as rs
+from .. import record_summary as rs
 
 def absolute_return_amount_by_date(data, date):
     return tt.absolute_return_for_month(data, date).amount

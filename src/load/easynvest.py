@@ -2,13 +2,13 @@ from datetime import timedelta
 import pandas as pd
 import re
 
-from load import read
-from load import easynvest_fixed_term
-from load import easynvest_variable
-from investments import filters
+from . import read
+from . import easynvest_fixed_term
+from . import easynvest_variable
+from ..investments import filters
 
-import record_summary as rs
-import date_helpers as dth
+from .. import record_summary as rs
+from .. import date_helpers as dth
 
 
 FILENAME_PATTERN = '/Exportar_custodia_([0-9\-]+).csv'

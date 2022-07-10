@@ -1,14 +1,14 @@
 import pandas as pd
 import seaborn as sns
-import record_summary as rs
-import formatting as fmt
+from .. import record_summary as rs
+from .. import formatting as fmt
 import plotly.graph_objs as go
 
 from datetime import date
 from plotly.offline import iplot
-from investments import totals as tt
-from investments import filters as ft
-from plotting import defaults
+from . import totals as tt
+from . import filters as ft
+from ..plotting import defaults
 
 def roi(incomes, base_date):
     """https://www.investopedia.com/terms/r/returnoninvestment.asp"""

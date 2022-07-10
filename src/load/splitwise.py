@@ -3,8 +3,8 @@ All Splitwise functions necessary to load and preprocess its data
 """
 import pandas as pd
 import re
-from load import read
-from load import data_processing
+from . import read
+from . import data_processing
 
 
 def parse_file_names(all_files, parse_regex):

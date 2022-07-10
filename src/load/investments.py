@@ -2,8 +2,8 @@
 All functions necessary to load and preprocess incomes
 """
 import pandas as pd
-from load import read
-from load import easynvest
+from . import read
+from . import easynvest
 
 
 def preprocess(incomes):

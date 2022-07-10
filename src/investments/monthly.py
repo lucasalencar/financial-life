@@ -1,8 +1,8 @@
-from investments import totals as tt
+from . import totals as tt
 
 import pandas as pd
-import record_summary as rs
-import formatting as fmt
+from .. import record_summary as rs
+from .. import formatting as fmt
 
 def summary(invest, base_date):
     past_month = rs.records_for_previous_month(invest, base_date)

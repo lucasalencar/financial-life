@@ -1,8 +1,7 @@
 import pandas as pd
-import record_summary as rs
-import date_helpers
-
-from investments import filters
+from .. import record_summary as rs
+from .. import date_helpers
+from ..investments import filters
 
 TITLES_TABLE = {
     'Brasil Plural Yield Fundo de Investimento Renda Fixa Referen': {

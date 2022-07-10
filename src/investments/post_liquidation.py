@@ -1,6 +1,6 @@
 import pandas as pd
-from investments import totals as tt
-from investments import filters
+from . import totals as tt
+from . import filters
 
 
 def liquidations_incomes(incomes):

@@ -1,9 +1,9 @@
-from load import read
-from load import data_processing
-from load import nubank
-from load import splitwise
-from load import investments
-from load import manual
+from . import read
+from . import data_processing
+from . import nubank
+from . import splitwise
+from . import investments
+from . import manual
 import pandas as pd
 
 

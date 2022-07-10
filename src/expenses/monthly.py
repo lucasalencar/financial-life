@@ -2,9 +2,9 @@ import pandas as pd
 import plotly.graph_objs as go
 from plotly.offline import iplot
 
-import formatting as fmt
-import record_summary as rs
-from plotting import defaults
+from .. import formatting as fmt
+from .. import record_summary as rs
+from ..plotting import defaults
 
 
 def expenses_by_month(expenses):

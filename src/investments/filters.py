@@ -1,5 +1,5 @@
 """All filters used for investments"""
-from investments import totals
+from . import totals
 
 
 def f_invested(incomes):

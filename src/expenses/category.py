@@ -1,7 +1,7 @@
 import pandas as pd
 
-import formatting as fmt
-import record_summary as rs
+from .. import formatting as fmt
+from .. import record_summary as rs
 
 
 def distribution_by_category(expenses, denominator):

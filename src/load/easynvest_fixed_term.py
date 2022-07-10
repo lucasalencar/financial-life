@@ -1,5 +1,5 @@
 import pandas as pd
-import record_summary as rs
+from .. import record_summary as rs
 
 
 TITLES_TABLE = {

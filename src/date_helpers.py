@@ -3,7 +3,6 @@ import pandas as pd
 
 from dateutil.relativedelta import relativedelta
 
-
 def beginning_of_month(date):
     return date.replace(day=1)
 

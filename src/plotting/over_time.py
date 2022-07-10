@@ -2,7 +2,7 @@
 
 import plotly.graph_objs as go
 from plotly.offline import iplot
-from plotting import defaults
+from . import defaults
 
 def plot(data, **configs):
     """

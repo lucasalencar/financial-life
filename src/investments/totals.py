@@ -1,9 +1,10 @@
 """All totals for all investments categories"""
 
-from investments import filters as ft
+from . import filters as ft
 import pandas as pd
 import numpy as np
-import record_summary as rs
+from .. import record_summary as rs
+from ..load import central_bank
 
 
 def total_invested_by(column, invest):
@@ -108,7 +109,6 @@ def total_monthly_return(invest, base_date):
 def return_with_inflation(return_perc, base_date):
     """Total return on percentage with inflation discounted
     for current month given base_date"""
-    from load import central_bank
     ipca = central_bank.ipca_for_month(base_date)
     if ipca is not None:
         return return_perc - ipca

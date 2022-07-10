@@ -1,8 +1,8 @@
 """Investment distribution functions"""
 
-from investments import totals as tt
-from plotting import defaults, pie
-import record_summary as rs
+from . import totals as tt
+from ..plotting import defaults, pie
+from .. import record_summary as rs
 
 
 def describe(invest, column, base_date):

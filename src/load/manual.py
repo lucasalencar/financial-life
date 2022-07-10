@@ -1,7 +1,7 @@
 """
 All functions necessary to load manual expenses entries
 """
-from load import read
+from . import read
 
 
 def load(file_pattern=None, data_path=None, **configs):

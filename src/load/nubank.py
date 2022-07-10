@@ -1,8 +1,8 @@
 """
 All Nubank functions necessary to load and preprocess its data
 """
-from load import read
-from load import data_processing
+from . import read
+from . import data_processing
 
 
 def fix_empty_category(category):
