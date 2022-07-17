@@ -1,5 +1,6 @@
 import pandas as pd
 import seaborn as sns
+from .. import filters
 from .. import record_summary as rs
 from .. import formatting as fmt
 import plotly.graph_objs as go
@@ -7,14 +8,13 @@ import plotly.graph_objs as go
 from datetime import date
 from plotly.offline import iplot
 from . import totals as tt
-from . import filters as ft
 from ..plotting import defaults
 
 def roi(incomes, base_date):
     """https://www.investopedia.com/terms/r/returnoninvestment.asp"""
     invested = tt.invested_for_month_by('title', incomes, base_date).amount.sum()
     previous_incomes = incomes[incomes.date < pd.Timestamp(base_date.replace(day=1))]
-    applications = ft.applications(previous_incomes).amount.sum()
+    applications = filters.investment.applications(previous_incomes).amount.sum()
 
     if applications == 0:
         return 0.0

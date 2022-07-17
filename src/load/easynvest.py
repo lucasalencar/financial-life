@@ -5,8 +5,8 @@ import re
 from . import read
 from . import easynvest_fixed_term
 from . import easynvest_variable
-from ..investments import filters
 
+from .. import filters
 from .. import record_summary as rs
 from .. import date_helpers as dth
 
@@ -118,9 +118,9 @@ APPLICATIONS_GROUPBY = ['title', 'type', 'account', 'goal']
 
 
 def compute_applications(data, base_date):
-    previous_month_data = rs.records_for_month(data,
+    previous_month_data = filters.datetime.records_for_month(data,
                                                dth.months_ago(base_date, 1))
-    current_month_data = rs.records_for_month(data, base_date)
+    current_month_data = filters.datetime.records_for_month(data, base_date)
     difference = rs.total_amount_by(APPLICATIONS_GROUPBY,
                                     current_month_data) - rs.total_amount_by(APPLICATIONS_GROUPBY,
                                                                              previous_month_data)
@@ -161,8 +161,8 @@ def compute_liquidations(date, title, invested):
 
 
 def preprocess_liquidations(funds):
-    applications = filters.applications(funds)
-    invested = filters.invested(funds)
+    applications = filters.investment.applications(funds)
+    invested = filters.investment.invested(funds)
     liquidations = applications[applications.amount.isna()].copy()
     liquidations['amount'] = liquidations.apply(lambda row: compute_liquidations(row.date, row.title, invested), axis=1)
     return liquidations

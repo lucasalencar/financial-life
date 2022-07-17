@@ -1,6 +1,7 @@
 import pandas as pd
 
 from .. import formatting as fmt
+from .. import filters
 from .. import record_summary as rs
 
 
@@ -42,8 +43,8 @@ def describe_over_time(expenses, incomes, post_describe_fn):
     """Computes expenses distribution over time, for all months available in expenses"""
     return rs.describe_over_time(expenses,
                               lambda exps, date: post_describe_fn(
-                                  distribution(rs.records_for_month(expenses, date),
-                                               rs.records_for_month(incomes, date))))
+                                  distribution(filters.datetime.records_for_month(expenses, date),
+                                               filters.datetime.records_for_month(incomes, date))))
 
 
 def over_time(expenses, incomes, column):
@@ -57,7 +58,7 @@ def over_time(expenses, incomes, column):
 
 
 def food_expenses(expenses, base_date):
-    data = rs.total_amount_by('category', rs.records_for_month(expenses, base_date))
+    data = rs.total_amount_by('category', filters.datetime.records_for_month(expenses, base_date))
     if 'mercado' in data.index and 'restaurante' in data.index:
         return pd.Series(data.loc['mercado'].amount + data.loc['restaurante'].amount) * -1
     else:

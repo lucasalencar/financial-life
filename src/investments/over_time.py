@@ -1,6 +1,5 @@
 from datetime import datetime
 from . import totals as tt
-from . import filters
 
 import pandas as pd
 import numpy as np

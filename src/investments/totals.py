@@ -1,48 +1,49 @@
 """All totals for all investments categories"""
 
-from . import filters as ft
 import pandas as pd
 import numpy as np
+
+from .. import filters
 from .. import record_summary as rs
 from ..load import central_bank
 
 
 def total_invested_by(column, invest):
     """Total invested grouped by column"""
-    return rs.total_amount_by(column, ft.invested(invest))
+    return rs.total_amount_by(column, filters.investment.invested(invest))
 
 
 def total_applications_by(column, invest):
     """Total applications grouped by column"""
-    return rs.total_amount_by(column, ft.applications(invest))
+    return rs.total_amount_by(column, filters.investment.applications(invest))
 
 
 def total_income_by(column, incomes):
     """Total incomes/salaries grouped by column"""
-    return rs.total_amount_by(column, ft.income(incomes))
+    return rs.total_amount_by(column, filters.investment.income(incomes))
 
 
 def total_discounts_by(column, incomes):
     """Total discounts grouped by column"""
-    return rs.total_amount_by(column, ft.discounts(incomes))
+    return rs.total_amount_by(column, filters.investment.discounts(incomes))
 
 
 def invested_for_month_by(column, invest, base_date):
     """Total invested on current month given base_date"""
-    invested = rs.records_for_month(invest, base_date)
+    invested = filters.datetime.records_for_month(invest, base_date)
     return total_invested_by(column, invested)
 
 
 def applications_for_month(incomes, base_date):
     """Total applications on current month given base_date"""
-    applications = rs.records_for_month(ft.applications(incomes), base_date)
+    applications = filters.datetime.records_for_month(filters.investment.applications(incomes), base_date)
     return rs.total_amount_by('title', applications)
 
 
 def absolute_return_for_month(invest, base_date):
     """Total return on current month given base_date"""
-    past_month = rs.records_for_previous_month(invest, base_date)
-    current_month = rs.records_for_month(invest, base_date)
+    past_month = filters.datetime.records_for_previous_month(invest, base_date)
+    current_month = filters.datetime.records_for_month(invest, base_date)
 
     invested_previous_month = total_invested_by('title', past_month)
     invested_for_month = total_invested_by('title', current_month)
@@ -61,7 +62,7 @@ def absolute_return_for_month_percentage(invest, base_date):
     because it computes all data dependencies instead of receiving
     some of the pre computed"""
     month_return = absolute_return_for_month(invest, base_date)
-    past_month = rs.records_for_previous_month(invest, base_date)
+    past_month = filters.datetime.records_for_previous_month(invest, base_date)
     invested_last_month = total_invested_by('title', past_month)
     return month_return / invested_last_month
 
@@ -70,8 +71,8 @@ def monthly_return_by_title(invest, base_date):
     """Monthly return percentage given investments.
     Even though it has a different calculation, it returns the same results
     as absolute_return_for_month_percentage"""
-    past_month = rs.records_for_previous_month(invest, base_date)
-    current_month = rs.records_for_month(invest, base_date)
+    past_month = filters.datetime.records_for_previous_month(invest, base_date)
+    current_month = filters.datetime.records_for_month(invest, base_date)
 
     invested_previous_month = total_invested_by('title', past_month)
     invested_for_month = total_invested_by('title', current_month)
@@ -90,13 +91,13 @@ def monthly_return_percentage(starting_balance, ending_balance, net_deposits):
 
 
 def total_monthly_return(invest, base_date):
-    past_month = rs.records_for_previous_month(invest, base_date)
-    current_month = rs.records_for_month(invest, base_date)
+    past_month = filters.datetime.records_for_previous_month(invest, base_date)
+    current_month = filters.datetime.records_for_month(invest, base_date)
 
-    invested_past_month = ft.invested(past_month).amount.sum()
-    invested_current_month = ft.invested(current_month).amount.sum()
-    applications_current_month = ft.applications(current_month).amount.sum()
-    discounts_current_month = ft.discounts(current_month).amount.sum()
+    invested_past_month = filters.investment.invested(past_month).amount.sum()
+    invested_current_month = filters.investment.invested(current_month).amount.sum()
+    applications_current_month = filters.investment.applications(current_month).amount.sum()
+    discounts_current_month = filters.investment.discounts(current_month).amount.sum()
 
     if invested_current_month == 0:
         return 0.0

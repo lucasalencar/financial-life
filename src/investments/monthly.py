@@ -1,12 +1,13 @@
 from . import totals as tt
 
 import pandas as pd
+from .. import filters
 from .. import record_summary as rs
 from .. import formatting as fmt
 
 def summary(invest, base_date):
-    past_month = rs.records_for_previous_month(invest, base_date)
-    current_month = rs.records_for_month(invest, base_date)
+    past_month = filters.datetime.records_for_previous_month(invest, base_date)
+    current_month = filters.datetime.records_for_month(invest, base_date)
 
     invest_return_for_month = tt.absolute_return_for_month(invest, base_date)
     invested_previous_month = tt.total_invested_by('title', past_month)

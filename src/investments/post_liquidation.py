@@ -1,10 +1,10 @@
 import pandas as pd
 from . import totals as tt
-from . import filters
+from .. import filters
 
 
 def liquidations_incomes(incomes):
-    finished = filters.liquidations(incomes).reset_index().title
+    finished = filters.investment.liquidations(incomes).reset_index().title
     return incomes[incomes.title.isin(list(finished))]
 
 
