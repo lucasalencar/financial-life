@@ -118,9 +118,9 @@ APPLICATIONS_GROUPBY = ['title', 'type', 'account', 'goal']
 
 
 def compute_applications(data, base_date):
-    previous_month_data = filters.datetime.records_for_month(data,
-                                               dth.months_ago(base_date, 1))
-    current_month_data = filters.datetime.records_for_month(data, base_date)
+    last_month_date = dth.months_ago(base_date, 1)
+    previous_month_data = filters.datetime.by_monthly_period(data, last_month_date, last_month_date)
+    current_month_data = filters.datetime.by_monthly_period(data, base_date, base_date)
     difference = rs.total_amount_by(APPLICATIONS_GROUPBY,
                                     current_month_data) - rs.total_amount_by(APPLICATIONS_GROUPBY,
                                                                              previous_month_data)

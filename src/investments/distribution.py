@@ -8,7 +8,7 @@ from .. import record_summary as rs
 
 def describe(invest, column, base_date):
     """Returns relevant data about types"""
-    current_month = filters.datetime.records_for_month(invest, base_date)
+    current_month = filters.datetime.by_monthly_period(invest, base_date, base_date)
     return tt.total_invested_by(column, current_month).amount
 
 
