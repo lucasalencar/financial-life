@@ -4,6 +4,9 @@ install:
 start:
 	./scripts/start.sh
 
+test:
+	pytest
+
 backup:
 	./scripts/backup_data_files.sh
 
