@@ -14,11 +14,11 @@ BC_CDI_BY_DAY_ACCUM_MONTH_ID = 4389
 # Where to find which is the timeseries ID to insert in thr BC URL
 # https://www3.bcb.gov.br/sgspub/localizarseries/localizarSeries.do?method=prepararTelaLocalizarSeries
 
-def load_local(timeseries_id=None, data_path='./data', **configs):
+def load_local(timeseries_id=None, data_path='../data', **configs):
     return pd.read_csv('%s/%s.csv' % (data_path, BC_IPCA_BY_MONTH_ID))
 
 
-def load_remote(timeseries_id=None, data_path='./data', **configs):
+def load_remote(timeseries_id=None, data_path='../data', **configs):
     timeseries_url = CENTRAL_BANK_TIMESERIES_URL % timeseries_id
     try:
         timeseries = pd.read_csv(timeseries_url, sep=";")
