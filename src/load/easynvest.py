@@ -34,11 +34,11 @@ def parse_file_names(all_files, filepath):
 
 
 def earliest_each_month(parsed_files):
-    months = rs.available_months(parsed_files)
+    months = aggregate.datetime.available_months(parsed_files)
     earliest = []
 
     for month in months:
-        first_day, last_day = dth.month_day_range(rs.month_to_date(month))
+        first_day, last_day = dth.month_day_range(aggregate.datetime.month_to_date(month))
         files_for_month = parsed_files[(parsed_files.date >= pd.Timestamp(first_day)) &
                                        (parsed_files.date <= pd.Timestamp(last_day))]
         earliest.append(files_for_month.min().filename)
@@ -141,7 +141,7 @@ def preprocess_applications(funds):
     # Fix date to be in the beginning of month
     funds['date'] = pd.to_datetime(funds.date
                                    .map(lambda d:
-                                        dth.beginning_of_month(rs.month_to_date(d))))
+                                        dth.beginning_of_month(aggregate.datetime.month_to_date(d))))
     funds['category'] = 'aplicação'
 
     # Remove first month because there is no record for its previous month
