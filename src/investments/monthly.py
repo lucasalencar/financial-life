@@ -2,7 +2,6 @@ from . import totals as tt
 
 import pandas as pd
 from .. import filters
-from .. import record_summary as rs
 from .. import date_helpers as dth
 from .. import formatting as fmt
 

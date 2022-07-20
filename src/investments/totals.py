@@ -5,7 +5,6 @@ import numpy as np
 
 from .. import filters
 from .. import aggregate
-from .. import record_summary as rs
 from .. import date_helpers as dth
 from ..load import central_bank
 

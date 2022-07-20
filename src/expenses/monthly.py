@@ -4,7 +4,6 @@ from plotly.offline import iplot
 
 from .. import aggregate
 from .. import formatting as fmt
-from .. import record_summary as rs
 from ..plotting import defaults
 
 

@@ -8,7 +8,6 @@ from . import easynvest_variable
 
 from .. import filters
 from .. import aggregate
-from .. import record_summary as rs
 from .. import date_helpers as dth
 
 
@@ -131,7 +130,7 @@ def compute_applications(data, base_date):
 def preprocess_applications(funds):
     funds = normalize_amount(funds, 'application')
     funds = aggregate.amount.total_amount_by(['date', 'title', 'type', 'account', 'goal'], funds).reset_index()
-    funds = rs.describe_over_time(funds, compute_applications)\
+    funds = aggregate.over_time.describe_over_time(funds, compute_applications)\
         .transpose()\
         .reset_index()\
         .melt(id_vars=APPLICATIONS_GROUPBY,

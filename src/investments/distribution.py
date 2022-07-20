@@ -3,7 +3,6 @@
 from . import totals as tt
 from ..plotting import defaults, pie
 from .. import filters
-from .. import record_summary as rs
 
 
 def describe(invest, column, base_date):

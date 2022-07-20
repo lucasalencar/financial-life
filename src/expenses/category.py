@@ -3,7 +3,6 @@ import pandas as pd
 from .. import filters
 from .. import aggregate
 from .. import formatting as fmt
-from .. import record_summary as rs
 
 
 def distribution_by_category(expenses, denominator):
@@ -42,10 +41,10 @@ def style_distribution(dist):
 
 def describe_over_time(expenses, incomes, post_describe_fn):
     """Computes expenses distribution over time, for all months available in expenses"""
-    return rs.describe_over_time(expenses,
-                              lambda exps, date: post_describe_fn(
-                                  distribution(filters.datetime.by_monthly_period(expenses, date, date),
-                                               filters.datetime.by_monthly_period(incomes, date, date))))
+    return aggregate.over_time.describe_over_time(expenses,
+                                                  lambda exps, date: post_describe_fn(
+                                                      distribution(filters.datetime.by_monthly_period(expenses, date, date),
+                                                                   filters.datetime.by_monthly_period(incomes, date, date))))
 
 
 def over_time(expenses, incomes, column):
@@ -68,5 +67,5 @@ def food_expenses(expenses, base_date):
 
 def add_food_expenses(expenses, over_time_data):
     clone_data = over_time_data.copy()
-    clone_data['alimentação'] = rs.describe_over_time(expenses, food_expenses)
+    clone_data['alimentação'] = aggregate.over_time.describe_over_time(expenses, food_expenses)
     return clone_data

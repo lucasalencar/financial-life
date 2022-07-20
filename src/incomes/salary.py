@@ -1,5 +1,4 @@
 from .. import filters
-from .. import record_summary as rs
 from .. import date_helpers as dh
 
 

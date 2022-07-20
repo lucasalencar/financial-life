@@ -1,9 +1,10 @@
 import pandas as pd
 import seaborn as sns
-from .. import filters
-from .. import record_summary as rs
-from .. import formatting as fmt
 import plotly.graph_objs as go
+
+from .. import filters
+from .. import aggregate
+from .. import formatting as fmt
 
 from datetime import date
 from plotly.offline import iplot
@@ -23,37 +24,37 @@ def roi(incomes, base_date):
 
 
 def invested_over_time(invest):
-    return rs.describe_over_time(invest,
-                                 lambda data, date:
-                                 tt.invested_for_month_by('title', invest, date)
-                                 .sum()).amount
+    return aggregate.over_time.describe_over_time(invest,
+                                                  lambda data, date:
+                                                  tt.invested_for_month_by('title', invest, date)
+                                                  .sum()).amount
 
 
 def return_over_time(invest):
-    return rs.describe_over_time(invest,
-                                 lambda data, date:
-                                 tt.absolute_return_for_month(data, date)
-                                 .sum()).amount
+    return aggregate.over_time.describe_over_time(invest,
+                                                  lambda data, date:
+                                                  tt.absolute_return_for_month(data, date)
+                                                  .sum()).amount
 
 
 def applications_over_time(invest):
-    return rs.describe_over_time(invest,
-                                 lambda data, date:
-                                 tt.applications_for_month(data, date)
-                                 .sum()).amount
+    return aggregate.over_time.describe_over_time(invest,
+                                                  lambda data, date:
+                                                  tt.applications_for_month(data, date)
+                                                  .sum()).amount
 
 
 def monthly_return_over_time(invest):
-    return rs.describe_over_time(invest,
-                                 lambda data, date:
-                                 pd.Series(tt.total_monthly_return(data, date),
-                                           index=['amount'])).amount
+    return aggregate.over_time.describe_over_time(invest,
+                                                  lambda data, date:
+                                                  pd.Series(tt.total_monthly_return(data, date),
+                                                            index=['amount'])).amount
 
 
 def roi_over_time(invest):
-    return rs.describe_over_time(invest,
-                                 lambda data, date:
-                                 pd.Series(roi(data, date), index=['amount'])).amount
+    return aggregate.over_time.describe_over_time(invest,
+                                                  lambda data, date:
+                                                  pd.Series(roi(data, date), index=['amount'])).amount
 
 
 def cumulative_return_over_time(invest):

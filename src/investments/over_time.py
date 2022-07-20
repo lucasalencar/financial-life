@@ -3,14 +3,15 @@ from . import totals as tt
 
 import pandas as pd
 import numpy as np
-from .. import record_summary as rs
+
+from .. import aggregate
 
 def absolute_return_amount_by_date(data, date):
     return tt.absolute_return_for_month(data, date).amount
 
 
 def return_over_time(invest):
-    return rs.describe_over_time(invest, absolute_return_amount_by_date)
+    return aggregate.over_time.describe_over_time(invest, absolute_return_amount_by_date)
 
 
 def absolute_return_amount_percentage_by_date(data, date):
@@ -18,12 +19,12 @@ def absolute_return_amount_percentage_by_date(data, date):
 
 
 def return_percentage_over_time(invest):
-    return rs.describe_over_time(invest, absolute_return_amount_percentage_by_date)
+    return aggregate.over_time.describe_over_time(invest, absolute_return_amount_percentage_by_date)
 
 
 def cumulative_return_over_time(invest):
-    return rs.describe_over_time(invest, absolute_return_amount_by_date).cumsum()
+    return aggregate.over_time.describe_over_time(invest, absolute_return_amount_by_date).cumsum()
 
 
 def cumulative_percentage_return_over_time(invest):
-    return rs.describe_over_time(invest, absolute_return_amount_percentage_by_date).cumsum()
+    return aggregate.over_time.describe_over_time(invest, absolute_return_amount_percentage_by_date).cumsum()
