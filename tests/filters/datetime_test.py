@@ -3,7 +3,6 @@
 from datetime import datetime, date
 from IPython.display import display
 import pandas as pd
-import numpy as np
 import pytest
 
 from src import filters
@@ -24,10 +23,6 @@ def df_with_multiple_dates():
    )
 
 
-def assert_filters_successfully(result, expected):
-    assert np.array_equal(result.values, expected.values)
-    assert np.array_equal(result.columns, expected.columns)
-
 # by_monthly_period
 
 def test_by_monthly_period_returns_whole_month(df_with_multiple_dates):
@@ -44,7 +39,7 @@ def test_by_monthly_period_returns_whole_month(df_with_multiple_dates):
         columns=['date', 'amount']
     )
     result = filters.datetime.by_monthly_period(df_with_multiple_dates, start_date, end_date)
-    assert_filters_successfully(result, expected)
+    pd.testing.assert_frame_equal(result.reset_index(drop=True), expected)
 
 
 def test_by_monthly_period_same_start_and_end(df_with_multiple_dates):
@@ -58,7 +53,7 @@ def test_by_monthly_period_same_start_and_end(df_with_multiple_dates):
         columns=['date', 'amount']
     )
     result = filters.datetime.by_monthly_period(df_with_multiple_dates, base_date, base_date)
-    assert_filters_successfully(result, expected)
+    pd.testing.assert_frame_equal(result.reset_index(drop=True), expected)
 
 
 def test_by_monthly_period_dates_on_edges(df_with_multiple_dates):
@@ -75,4 +70,4 @@ def test_by_monthly_period_dates_on_edges(df_with_multiple_dates):
         columns=['date', 'amount']
     )
     result = filters.datetime.by_monthly_period(df_with_multiple_dates, start_date, end_date)
-    assert_filters_successfully(result, expected)
+    pd.testing.assert_frame_equal(result, expected)
