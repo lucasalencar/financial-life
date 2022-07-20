@@ -4,16 +4,17 @@ from plotly.offline import iplot
 
 from .. import formatting as fmt
 from .. import record_summary as rs
+from .. import aggregate
 from ..plotting import defaults
 
 
 def expenses_by_month(expenses):
-    return rs.total_amount_by(rs.groupby_month(expenses), expenses)
+    return aggregate.amount.total_amount_by(rs.groupby_month(expenses), expenses)
 
 
 def incomes_by_month(incomes):
     income_salary = incomes[incomes.category == 'renda'][['date', 'amount']]
-    return rs.total_amount_by(rs.groupby_month(income_salary), income_salary)
+    return aggregate.amount.total_amount_by(rs.groupby_month(income_salary), income_salary)
 
 
 def balance(expense, income):

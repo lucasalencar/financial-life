@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 
 from .. import filters
+from .. import aggregate
 from .. import record_summary as rs
 from .. import date_helpers as dth
 from ..load import central_bank
@@ -11,22 +12,22 @@ from ..load import central_bank
 
 def total_invested_by(column, invest):
     """Total invested grouped by column"""
-    return rs.total_amount_by(column, filters.investment.invested(invest))
+    return aggregate.amount.total_amount_by(column, filters.investment.invested(invest))
 
 
 def total_applications_by(column, invest):
     """Total applications grouped by column"""
-    return rs.total_amount_by(column, filters.investment.applications(invest))
+    return aggregate.amount.total_amount_by(column, filters.investment.applications(invest))
 
 
 def total_income_by(column, incomes):
     """Total incomes/salaries grouped by column"""
-    return rs.total_amount_by(column, filters.investment.income(incomes))
+    return aggregate.amount.total_amount_by(column, filters.investment.income(incomes))
 
 
 def total_discounts_by(column, incomes):
     """Total discounts grouped by column"""
-    return rs.total_amount_by(column, filters.investment.discounts(incomes))
+    return aggregate.amount.total_amount_by(column, filters.investment.discounts(incomes))
 
 
 def invested_for_month_by(column, invest, base_date):
@@ -38,7 +39,7 @@ def invested_for_month_by(column, invest, base_date):
 def applications_for_month(incomes, base_date):
     """Total applications on current month given base_date"""
     applications = filters.datetime.by_monthly_period(filters.investment.applications(incomes), base_date, base_date)
-    return rs.total_amount_by('title', applications)
+    return aggregate.amount.total_amount_by('title', applications)
 
 
 def absolute_return_for_month(invest, base_date):

@@ -1,18 +1,19 @@
 import pandas as pd
 
-from .. import formatting as fmt
 from .. import filters
+from .. import aggregate
+from .. import formatting as fmt
 from .. import record_summary as rs
 
 
 def distribution_by_category(expenses, denominator):
     denominator_sum = denominator.amount.sum()
-    expenses_by_category = rs.total_amount_by('category', expenses).sort_values('amount')
+    expenses_by_category = aggregate.amount.total_amount_by('category', expenses).sort_values('amount')
     return expenses_by_category / denominator_sum
 
 
 def distribution(expenses, incomes, categories={}):
-    expenses_by_category = rs.total_amount_by('category', expenses)
+    expenses_by_category = aggregate.amount.total_amount_by('category', expenses)
     dist_by_spent = distribution_by_category(expenses, expenses)
     dist_by_income = distribution_by_category(expenses,
                                               incomes[incomes.category == 'renda']) * -1
@@ -58,7 +59,7 @@ def over_time(expenses, incomes, column):
 
 
 def food_expenses(expenses, base_date):
-    data = rs.total_amount_by('category', filters.datetime.by_monthly_period(expenses, base_date, base_date))
+    data = aggregate.amount.total_amount_by('category', filters.datetime.by_monthly_period(expenses, base_date, base_date))
     if 'mercado' in data.index and 'restaurante' in data.index:
         return pd.Series(data.loc['mercado'].amount + data.loc['restaurante'].amount) * -1
     else:

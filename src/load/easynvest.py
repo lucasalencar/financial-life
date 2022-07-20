@@ -7,6 +7,7 @@ from . import easynvest_fixed_term
 from . import easynvest_variable
 
 from .. import filters
+from .. import aggregate
 from .. import record_summary as rs
 from .. import date_helpers as dth
 
@@ -109,7 +110,7 @@ def normalize_amount(data, column):
 
 def preprocess_invested(funds):
     funds = normalize_amount(funds, 'gross amount')
-    funds = rs.total_amount_by(['date', 'title', 'type', 'account', 'goal'], funds).reset_index()
+    funds = aggregate.amount.total_amount_by(['date', 'title', 'type', 'account', 'goal'], funds).reset_index()
     funds['category'] = 'valor aplicado'
     return funds
 
@@ -121,15 +122,15 @@ def compute_applications(data, base_date):
     last_month_date = dth.months_ago(base_date, 1)
     previous_month_data = filters.datetime.by_monthly_period(data, last_month_date, last_month_date)
     current_month_data = filters.datetime.by_monthly_period(data, base_date, base_date)
-    difference = rs.total_amount_by(APPLICATIONS_GROUPBY,
-                                    current_month_data) - rs.total_amount_by(APPLICATIONS_GROUPBY,
+    difference = aggregate.amount.total_amount_by(APPLICATIONS_GROUPBY,
+                                    current_month_data) - aggregate.amount.total_amount_by(APPLICATIONS_GROUPBY,
                                                                              previous_month_data)
     return difference.amount
 
 
 def preprocess_applications(funds):
     funds = normalize_amount(funds, 'application')
-    funds = rs.total_amount_by(['date', 'title', 'type', 'account', 'goal'], funds).reset_index()
+    funds = aggregate.amount.total_amount_by(['date', 'title', 'type', 'account', 'goal'], funds).reset_index()
     funds = rs.describe_over_time(funds, compute_applications)\
         .transpose()\
         .reset_index()\
